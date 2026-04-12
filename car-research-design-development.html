@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Successors — Car Research & Design Development</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --purple: #3A0CA3;
+    --purple-light: #5A2ED6;
+    --purple-glow: rgba(58, 12, 163, 0.30);
+    --gold: #E5B80B;
+    --gold-dim: rgba(229, 184, 11, 0.5);
+    --gold-glow: rgba(229, 184, 11, 0.12);
+    --light-leak-opacity: 0.50;
+    --obsidian: #050505;
+    --obsidian-card: rgba(255, 255, 255, 0.04);
+    --obsidian-border: rgba(255, 255, 255, 0.08);
+    --white: #FFFFFF;
+    --white-dim: rgba(255, 255, 255, 0.65);
+    --white-muted: rgba(255, 255, 255, 0.45);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+  }
+
+  @page {
+    size: 420mm 297mm;
+    margin: 0;
+  }
+
+  html, body {
+    width: 420mm;
+    height: 297mm;
+    overflow: hidden;
+    background: var(--obsidian);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  body {
+    position: relative;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Purple light leak — bottom-left */
+  body::after {
+    content: '';
+    position: absolute;
+    bottom: -80mm;
+    left: -60mm;
+    width: 280mm;
+    height: 220mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(58, 12, 163, calc(0.30 * var(--light-leak-opacity))) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Gold light leak — top-right */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: -70mm;
+    right: -50mm;
+    width: 240mm;
+    height: 200mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(229, 184, 11, calc(0.08 * var(--light-leak-opacity))) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== PAGE SHELL ===== */
+  .page {
+    position: relative;
+    z-index: 2;
+    width: 420mm;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    padding: 3.6mm 5.5mm;
+  }
+
+  /* ===== HEADER STRIP ===== */
+  .header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    height: 9mm;
+    padding: 0 3mm;
+    border-bottom: 0.3mm solid var(--obsidian-border);
+    margin-bottom: 1.6mm;
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    min-width: 0;
+    align-self: end;
+    line-height: 1;
+    transform: translateY(-1.75mm);
+  }
+
+  .header-center {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20pt;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    justify-self: center;
+    align-self: end;
+    text-align: center;
+    line-height: 1;
+    transform: translateY(-1mm);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: flex-end;
+    gap: 3mm;
+    justify-self: end;
+    align-self: end;
+    transform: translateY(-1.2mm);
+  }
+
+  .header-right img {
+    height: 9mm;
+    width: auto;
+    object-fit: contain;
+    transform: translateY(0);
+  }
+
+  .header-page-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--gold-dim);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  /* ===== 3-COLUMN BODY ===== */
+  .body-grid {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 33fr) minmax(0, 39fr) minmax(0, 28fr);
+    gap: 2.6mm;
+    min-height: 0;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.7mm;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* ===== GLASS CARD ===== */
+  .glass-card {
+    position: relative;
+    background: var(--obsidian-card);
+    border: 0.3mm solid var(--obsidian-border);
+    border-radius: 1.5mm;
+    padding: 2mm 2.6mm;
+    backdrop-filter: blur(2px);
+    overflow: hidden;
+  }
+
+  /* Tech bracket corners */
+  .glass-card.brackets::before,
+  .glass-card.brackets::after {
+    content: '';
+    position: absolute;
+    width: 4mm;
+    height: 4mm;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .glass-card.brackets::before {
+    top: 1mm;
+    left: 1mm;
+    border-width: 0.3mm 0 0 0.3mm;
+  }
+  .glass-card.brackets::after {
+    bottom: 1mm;
+    right: 1mm;
+    border-width: 0 0.3mm 0.3mm 0;
+  }
+
+  /* Gold glow variant */
+  .glass-card.gold-glow {
+    border-color: rgba(229, 184, 11, 0.12);
+    box-shadow: 0 0 8mm rgba(229, 184, 11, 0.08), inset 0 0 6mm rgba(229, 184, 11, 0.02);
+  }
+
+  /* ===== TYPOGRAPHY TOKENS ===== */
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    margin-bottom: 0.95mm;
+  }
+
+  .section-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    font-style: italic;
+    margin-bottom: 0.9mm;
+  }
+
+  .body-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.42;
+  }
+
+  .body-text-sm {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.38;
+  }
+
+  .eval-caption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--gold-dim);
+    line-height: 1.4;
+    margin-top: 0.8mm;
+    padding-top: 0.7mm;
+    border-top: 0.2mm solid rgba(229, 184, 11, 0.1);
+  }
+
+  .eval-caption::before {
+    content: '\27D0\0020';
+    font-style: normal;
+  }
+
+  /* ===== PLACEHOLDER SYSTEM ===== */
+  .stage-placeholder {
+    width: 100%;
+    border: 0.3mm dashed rgba(229, 184, 11, 0.20);
+    border-radius: 0.8mm;
+    background: linear-gradient(135deg, rgba(58, 12, 163, 0.06) 0%, rgba(229, 184, 11, 0.03) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stage-placeholder-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.25pt;
+    font-weight: 500;
+    color: var(--white-muted);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .equation-formula {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12pt;
+    font-weight: 600;
+    color: var(--white-dim);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .equation-formula sub,
+  .equation-formula sup {
+    font-size: 0.7em;
+    line-height: 0;
+  }
+
+  .equation-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.8mm;
+    overflow: hidden;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.018) 100%),
+      linear-gradient(135deg, rgba(58, 12, 163, 0.07) 0%, rgba(229, 184, 11, 0.03) 100%);
+    border: 0.25mm solid rgba(255, 255, 255, 0.08);
+  }
+
+  .diagram-media-card {
+    position: relative;
+    border-radius: 0.8mm;
+    overflow: hidden;
+  }
+
+  .diagram-media-card img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    border-radius: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.8mm;
+  }
+
+  .diagram-media-card.fill img {
+    object-fit: cover;
+    padding: 0;
+  }
+
+  .diagram-media-card.zoom img {
+    object-fit: cover;
+    object-position: center;
+    padding: 0.8mm;
+    box-sizing: border-box;
+  }
+
+  .research-table-card {
+    --table-card-radius: 0.8mm;
+    --table-card-inset: 0.8mm;
+    position: relative;
+    border-radius: var(--table-card-radius);
+    overflow: hidden;
+    padding: 0.8mm;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.018) 48%, rgba(255, 255, 255, 0.03) 100%),
+      linear-gradient(180deg, rgba(10, 10, 14, 0.98) 0%, rgba(18, 18, 24, 0.94) 100%);
+    border: 0.25mm solid rgba(255, 255, 255, 0.09);
+    box-shadow: inset 0 0 0.8mm rgba(255, 255, 255, 0.015);
+    backdrop-filter: blur(8px) saturate(118%);
+  }
+
+  .research-table-frame {
+    height: 100%;
+    border-radius: calc(var(--table-card-radius) - var(--table-card-inset));
+    border: 0.2mm solid rgba(255, 255, 255, 0.10);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.01) 100%),
+      linear-gradient(180deg, rgba(8, 8, 11, 0.96) 0%, rgba(14, 14, 18, 0.92) 100%);
+    overflow: hidden;
+    padding: 0.8mm;
+    backdrop-filter: blur(10px) saturate(120%);
+  }
+
+  .research-table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .research-table th,
+  .research-table td {
+    padding: 0.62mm 0.8mm;
+    border-right: 0.18mm solid rgba(255, 255, 255, 0.075);
+    border-bottom: 0.18mm solid rgba(255, 255, 255, 0.075);
+    vertical-align: top;
+  }
+
+  .research-table th:last-child,
+  .research-table td:last-child {
+    border-right: 0;
+  }
+
+  .research-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .research-table th {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4.8pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.03em;
+    text-transform: none;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.024) 100%);
+    text-align: left;
+  }
+
+  .research-table td {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 4.7pt;
+    font-weight: 400;
+    color: var(--white-muted);
+    line-height: 1.16;
+  }
+
+  .research-table tbody tr:nth-child(odd) td {
+    background: rgba(255, 255, 255, 0.018);
+  }
+
+  .research-table tbody tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.008);
+  }
+
+  .regulations-table td:first-child,
+  .regulations-table td:last-child {
+    color: var(--white-dim);
+    font-weight: 600;
+  }
+
+  .regulations-table-card {
+    padding: 0.48mm;
+  }
+
+  .regulations-table-card .research-table-frame {
+    padding: 0.42mm;
+  }
+
+  .regulations-table-card .research-table th,
+  .regulations-table-card .research-table td {
+    padding: 0.5mm 0.68mm;
+  }
+
+  .regulations-table-card .research-table th {
+    font-size: 4.4pt;
+    letter-spacing: 0.02em;
+  }
+
+  .regulations-table-card .research-table td {
+    font-size: 4.35pt;
+    line-height: 1.04;
+  }
+
+  .regulations-table td:nth-child(2) {
+    text-align: center;
+    vertical-align: middle;
+    color: var(--white);
+  }
+
+  .regulations-table .reg-eq {
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4.5pt;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .regulations-table .reg-eq sub {
+    font-size: 0.7em;
+    vertical-align: -0.25em;
+  }
+
+  /* ===== FIGURE CAPTION ===== */
+  .fig-caption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--gold-dim);
+    line-height: 1.35;
+    margin-top: 0.7mm;
+    text-align: center;
+  }
+
+  .fig-caption::before {
+    content: '\27D0\0020';
+    font-style: normal;
+  }
+
+  /* ===== DEFINITION LIST (equation variables) ===== */
+  .def-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55mm 1.35mm;
+    margin: 0.7mm 0 0;
+    padding: 0;
+  }
+
+  .def-item {
+    display: inline-flex;
+    gap: 0.7mm;
+    align-items: baseline;
+  }
+
+  .def-symbol {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    min-width: 6mm;
+  }
+
+  .def-desc {
+    font-size: 7pt;
+    color: var(--white-muted);
+    line-height: 1.35;
+  }
+
+  .def-list.is-paragraph {
+    display: block;
+  }
+
+  .def-list.is-paragraph .def-item {
+    display: inline;
+  }
+
+  .def-list.is-paragraph .def-item + .def-item {
+    margin-left: 1.2mm;
+  }
+
+  .def-list.is-paragraph .def-symbol {
+    display: inline;
+    min-width: 0;
+    margin-right: 0.45mm;
+  }
+
+  .def-list.is-paragraph .def-desc {
+    display: inline;
+  }
+
+  /* ===== CONCEPT / TERM ITEMS ===== */
+  .concept-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5mm;
+    margin-top: 0.5mm;
+  }
+
+  .concept-item {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.38;
+  }
+
+  .concept-item strong {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 700;
+    color: inherit;
+    letter-spacing: 0;
+  }
+
+  /* ===== INSPIRATION GRID ===== */
+  .inspiration-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.3mm;
+    margin-top: 0.6mm;
+  }
+
+  .inspiration-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .inspiration-item .diagram-media-card.fill img {
+    padding: 0.8mm;
+    box-sizing: border-box;
+  }
+
+  /* ===== SKETCHES GRID ===== */
+  .sketches-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1.3mm;
+    margin-top: 0.6mm;
+  }
+
+  .sketches-grid > .diagram-media-card {
+    grid-column: span 2;
+  }
+
+  .sketches-grid > .diagram-media-card:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .sketches-grid > .diagram-media-card:nth-child(5) {
+    grid-column: 4 / span 2;
+  }
+
+  /* ===== PROTOTYPE GRID ===== */
+  .prototype-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5mm;
+    margin-top: 0.6mm;
+  }
+
+  .prototype-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5mm;
+    padding: 1.2mm;
+    background: rgba(58, 12, 163, 0.05);
+    border: 0.2mm solid rgba(58, 12, 163, 0.10);
+    border-radius: 0.8mm;
+  }
+
+  .prototype-card .proto-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.2mm;
+  }
+
+  .prototype-card .proto-desc {
+    font-size: 6.75pt;
+    color: var(--white-muted);
+    line-height: 1.34;
+  }
+
+  /* ===== STAT ROW ===== */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6mm;
+    margin-top: 0.4mm;
+  }
+
+  .stat-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.6mm 0.4mm;
+    background: rgba(58, 12, 163, 0.12);
+    border: 0.2mm solid rgba(58, 12, 163, 0.2);
+    border-radius: 0.6mm;
+  }
+
+  .stat-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6pt;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 5.5pt;
+    font-weight: 500;
+    color: var(--white-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+  }
+
+  /* ===== CURRENT DESIGN GRID ===== */
+  .current-design-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.3mm;
+    margin-top: 0.6mm;
+  }
+
+  .current-design-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95mm;
+    flex: 1;
+  }
+
+  .current-design-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.3mm;
+  }
+
+  .current-design-figure {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .current-design-figure .fig-caption {
+    margin-top: 0.45mm;
+    font-size: 6.9pt;
+    line-height: 1.28;
+  }
+
+  .current-design-detail {
+    font-size: 6.75pt;
+    color: var(--white-muted);
+    line-height: 1.34;
+    margin-top: 0.25mm;
+  }
+
+  /* ===== SOFTWARE LIST ===== */
+  .software-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2mm;
+    margin-top: 0.6mm;
+  }
+
+  .software-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.9mm;
+  }
+
+  .software-icon {
+    width: 8mm;
+    height: 8mm;
+    flex-shrink: 0;
+    border-radius: 0.8mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .software-icon .stage-placeholder-label {
+    font-size: 4pt;
+    letter-spacing: 0.04em;
+  }
+
+  .software-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 0.6mm;
+  }
+
+  .software-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .software-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.3mm;
+  }
+
+  .software-desc {
+    font-size: 7.25pt;
+    color: var(--white-muted);
+    line-height: 1.35;
+  }
+
+  /* ===== PRINT BUTTON ===== */
+  .print-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--obsidian);
+    background: var(--gold);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    box-shadow: 0 2px 12px rgba(229, 184, 11, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .print-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(229, 184, 11, 0.45);
+  }
+
+  @media print {
+    .print-btn { display: none !important; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">PRINT / PDF</button>
+
+<div class="page">
+
+  <!-- ===== HEADER STRIP ===== -->
+  <header class="header">
+    <div class="header-left">Qualifinals Portfolio &middot; 2025-2026</div>
+    <div class="header-center">Car Research &amp; Design Development</div>
+    <div class="header-right">
+      <img src="../TeamSuccessors/public/brand/logo.svg" alt="Successors Logo">
+      <span class="header-page-num">04</span>
+    </div>
+  </header>
+
+  <!-- ===== 3-COLUMN BODY ===== -->
+  <div class="body-grid">
+
+    <!-- ========== LEFT COLUMN — Research Foundations ========== -->
+    <div class="col">
+
+      <!-- L1: DESIGN PHILOSOPHY -->
+      <div class="glass-card brackets">
+        <div class="section-title">Design Philosophy</div>
+        <p class="body-text-sm">Our design philosophy is centred on identifying the limits of the technical regulations and using aerodynamic principles to highlight the most effective areas within them. We then develop prototypes based on these evaluations, past designs, and real-world inspiration.</p>
+      </div>
+
+      <!-- L2: AERODYNAMIC DRAG -->
+      <div class="glass-card">
+        <div class="section-title">Aerodynamic Drag</div>
+        <div class="equation-box" style="height: 14mm; margin-bottom: 0.7mm;">
+          <span class="equation-formula">D = &frac12;&rho;v<sup>2</sup>C<sub>d</sub>A</span>
+        </div>
+        <p class="def-list is-paragraph">
+          <span class="def-item"><span class="def-symbol">D</span><span class="def-desc">= Drag force;</span></span>
+          <span class="def-item"><span class="def-symbol">&rho;</span><span class="def-desc">= density;</span></span>
+          <span class="def-item"><span class="def-symbol">v</span><span class="def-desc">= velocity of car;</span></span>
+          <span class="def-item"><span class="def-symbol">C<sub>d</sub></span><span class="def-desc">= Drag coefficient;</span></span>
+          <span class="def-item"><span class="def-symbol">A</span><span class="def-desc">= frontal area.</span></span>
+        </p>
+        <div class="concept-list">
+          <p class="concept-item"><strong>Wake:</strong> a region of turbulent, low-pressure, chaotic air that forms behind an object as it moves through a fluid, often causing pressure drag.</p>
+          <p class="concept-item"><strong>Pressure drag:</strong> the aerodynamic drag caused by the difference in air pressure between the front and the rear of a moving object.</p>
+          <p class="concept-item"><strong>Skin drag:</strong> the aerodynamic drag caused by friction between the air and the surface of a moving object.</p>
+          <p class="concept-item"><strong>Form drag:</strong> the aerodynamic drag created by the shape of an object and how that shape forces air to separate as it flows around it.</p>
+          <p class="concept-item"><strong>Stagnation pressure:</strong> the pressure at the point where the airflow hits the surface head-on and cannot move forward.</p>
+          <p class="concept-item"><strong>Vortices:</strong> swirling, spiral-shaped masses of air that form when high-pressure and low-pressure air mix together.</p>
+        </div>
+      </div>
+
+      <!-- L3: BERNOULLI'S PRINCIPLE -->
+      <div class="glass-card">
+        <div class="section-title">Bernoulli's Principle</div>
+        <p class="body-text-sm">Bernoulli's principle states that, as the speed of a fluid increases, its pressure decreases, causing faster-moving air to exert less pressure than slower-moving air. This is often used to create airfoils that generate a pressure differential between the top and bottom surfaces, producing lift or downforce.</p>
+        <div class="diagram-media-card" style="height: 22mm; margin-top: 0.7mm;">
+          <img src="Car-Research-Design-Development Public/Bernoullis Diagram.png" alt="Bernoulli's principle airflow diagram">
+        </div>
+        <p class="fig-caption">Diagram showing how an airfoil may generate downforce. Credit: Team Successors.</p>
+      </div>
+
+      <!-- L4: REYNOLDS NUMBER -->
+      <div class="glass-card">
+        <div class="section-title">Reynolds Number</div>
+        <p class="body-text-sm">Reynolds number is a unitless measure of how fast and how large an object is moving through a fluid compared with how viscous that fluid is.</p>
+        <div class="equation-box" style="height: 12mm; margin-top: 0.7mm; margin-bottom: 0.7mm;">
+          <span class="equation-formula">Re = &rho;vL / &mu;</span>
+        </div>
+        <p class="def-list is-paragraph">
+          <span class="def-item"><span class="def-symbol">Re</span><span class="def-desc">= Reynolds number;</span></span>
+          <span class="def-item"><span class="def-symbol">&rho;</span><span class="def-desc">= density of air;</span></span>
+          <span class="def-item"><span class="def-symbol">v</span><span class="def-desc">= velocity of car;</span></span>
+          <span class="def-item"><span class="def-symbol">L</span><span class="def-desc">= length of car;</span></span>
+          <span class="def-item"><span class="def-symbol">&mu;</span><span class="def-desc">= viscosity of air.</span></span>
+        </p>
+        <p class="body-text-sm" style="margin-top: 0.5mm;">Due to the car's small length (0.17m-0.21m), Reynolds number is low, so flow separates earlier, wakes become larger, and pressure drag becomes dominant, accounting for around 80-90% of total drag.</p>
+      </div>
+
+      <!-- L5: THE REGULATIONS -->
+      <div class="glass-card" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="section-title">The Regulations</div>
+        <p class="body-text-sm" style="margin-bottom: 0.7mm;">Before designing, we first narrowed our options to the most effective routes, saving time and resources. To do this, we defined the technical regulations and their limits, then identified the most efficient solutions in terms of flow behaviour and wake formation. Our findings are summarised in the table below:</p>
+        <div class="research-table-card regulations-table-card" style="flex: 1; min-height: 14mm;">
+          <div class="research-table-frame">
+            <table class="research-table regulations-table" aria-label="Technical regulations summary table">
+              <colgroup>
+                <col style="width: 20%;">
+                <col style="width: 31%;">
+                <col style="width: 24%;">
+                <col style="width: 25%;">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Relation to drag</th>
+                  <th>Regulations</th>
+                  <th>Recommendation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total length</td>
+                  <td><span class="reg-eq">D &prop; 1 / L<sub>total</sub></span></td>
+                  <td>170 mm to 210 mm</td>
+                  <td>210 mm</td>
+                </tr>
+                <tr>
+                  <td>Total width</td>
+                  <td><span class="reg-eq">D &prop; W<sub>total</sub></span></td>
+                  <td>Max: 90 mm</td>
+                  <td>As small as possible</td>
+                </tr>
+                <tr>
+                  <td>Front/rear wing wingspan</td>
+                  <td><span class="reg-eq">D &prop; L<sub>wing</sub></span></td>
+                  <td>Min: 60 mm</td>
+                  <td>60 mm</td>
+                </tr>
+                <tr>
+                  <td>Front/rear wing chord</td>
+                  <td><span class="reg-eq">D &prop; L<sub>chord</sub></span></td>
+                  <td>15 mm to 30 mm</td>
+                  <td>15 mm</td>
+                </tr>
+                <tr>
+                  <td>Front/rear wing thickness</td>
+                  <td><span class="reg-eq">D &prop; L<sub>thickness</sub></span></td>
+                  <td>5 mm to 15 mm</td>
+                  <td>5 mm</td>
+                </tr>
+                <tr>
+                  <td>Nose width</td>
+                  <td><span class="reg-eq">D &prop; W<sub>nose</sub></span></td>
+                  <td>N/A</td>
+                  <td>As small as possible</td>
+                </tr>
+                <tr>
+                  <td>Wheelbase</td>
+                  <td><span class="reg-eq">D &prop; 1 / L<sub>wheelbase</sub></span></td>
+                  <td>N/A</td>
+                  <td>As long as possible</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== CENTER COLUMN — Analysis & Iterative Design ========== -->
+    <div class="col">
+
+      <!-- C1: REAR WING -->
+      <div class="glass-card">
+        <div class="section-title">Rear Wing</div>
+        <p class="body-text-sm">The role of the rear wing in a typical Formula 1 car is to generate downforce, increasing speed through corners. In our case, where we race in a straight line, downforce serves little purpose and may instead create drag. This means the rear wing on our car should aim to minimise both drag and lift/downforce. Through our analysis, we found that symmetrical airfoils such as NACA 0009, 0010, and 0012, at an angle of attack near 0, produced the best results.</p>
+        <div class="diagram-media-card" style="height: 24.5mm; margin-top: 0.7mm;">
+          <img src="Car-Research-Design-Development Public/Rear Wing Cl-Cd Graph.png" alt="Rear wing lift and drag coefficient graph">
+        </div>
+        <p class="fig-caption">Graphs comparing angle of attack (&alpha;) with coefficient of drag (Cd) and coefficient of lift (Cl) at a Reynolds number of 280000.</p>
+      </div>
+
+      <!-- C2: INSPIRATION -->
+      <div class="glass-card">
+        <div class="section-title">Inspiration</div>
+        <div class="inspiration-grid">
+          <div class="inspiration-item">
+            <div class="diagram-media-card fill" style="height: 23mm;">
+              <img src="Car-Research-Design-Development Public/Race Car.png" alt="Race car inspiration image">
+            </div>
+            <p class="fig-caption">Porsche 919 Hybrid Evo. The inspiration taken was the fin at the rear of the car.</p>
+          </div>
+          <div class="inspiration-item">
+            <div class="diagram-media-card fill" style="height: 23mm;">
+              <img src="Car-Research-Design-Development Public/Eagle.png" alt="Bald eagle inspiration image">
+            </div>
+            <p class="fig-caption">Bald eagle. The inspiration taken was the way its body smoothly redirects air towards the rear.</p>
+          </div>
+          <div class="inspiration-item">
+            <div class="diagram-media-card fill" style="height: 23mm;">
+              <img src="Car-Research-Design-Development Public/Mercedes.png" alt="Mercedes concept inspiration image">
+            </div>
+            <p class="fig-caption">Mercedes-Benz Concept IAA. The inspiration taken was its Kammback.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- C3: SKETCHES & CONCEPTS -->
+      <div class="glass-card">
+        <div class="section-title">Sketches &amp; Concepts</div>
+        <div class="section-subtitle">Hand-drawn sketches</div>
+        <div class="sketches-grid">
+          <div class="diagram-media-card" style="height: 15.8mm;">
+            <img src="Car-Research-Design-Development Public/Sketch 1.png" alt="Sketch 1 concept drawing">
+          </div>
+          <div class="diagram-media-card" style="height: 15.8mm;">
+            <img src="Car-Research-Design-Development Public/Sketch 2.png" alt="Sketch 2 concept drawing">
+          </div>
+          <div class="diagram-media-card" style="height: 15.8mm;">
+            <img src="Car-Research-Design-Development Public/Sketch 3.png" alt="Sketch 3 concept drawing">
+          </div>
+          <div class="diagram-media-card" style="height: 15.8mm;">
+            <img src="Car-Research-Design-Development Public/Sketch 4.png" alt="Sketch 4 concept drawing">
+          </div>
+          <div class="diagram-media-card" style="height: 15.8mm;">
+            <img src="Car-Research-Design-Development Public/Sketch 5.png" alt="Sketch 5 concept drawing">
+          </div>
+        </div>
+        <div class="section-subtitle" style="margin-top: 1mm;">Initial Concepts</div>
+        <div class="diagram-media-card" style="height: 19mm;">
+          <img src="Car-Research-Design-Development Public/Inital Designs.png" alt="Initial concept designs overview">
+        </div>
+        <p class="body-text-sm" style="margin-top: 0.5mm;">To begin our journey, we needed an initial design phase to become familiar with the regulations and adapt to this workflow. This resulted in three concepts, each developed by one of our three engineers.</p>
+      </div>
+
+      <!-- C4: PROTOTYPES -->
+      <div class="glass-card brackets" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="section-title">Prototypes</div>
+        <div class="prototype-grid" style="flex: 1;">
+
+          <!-- Prototype 1 -->
+          <div class="prototype-card">
+            <div class="diagram-media-card" style="height: 24mm;">
+              <img src="Car-Research-Design-Development Public/Prototype 1.png" alt="Prototype 1 render">
+            </div>
+            <div class="proto-title">Prototype 1</div>
+            <div class="stat-row">
+              <div class="stat-pill">
+                <span class="stat-value">0.244N</span>
+                <span class="stat-label">Drag</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">0.048N</span>
+                <span class="stat-label">Lift</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">62g</span>
+                <span class="stat-label">Mass</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">1.3423s</span>
+                <span class="stat-label">Race</span>
+              </div>
+            </div>
+            <p class="proto-desc">Prototype 1 car incorporated the most effective features from initial concepts. The side pods used a smooth, organic geometry with filleted and lofted surfaces to promote streamlined airflow from the nose to the cockpit, reducing flow separation. However, the rear pods were too blocky, and the rear wing generated significant form drag.</p>
+          </div>
+
+          <!-- Prototype 2 -->
+          <div class="prototype-card">
+            <div class="diagram-media-card" style="height: 24mm;">
+              <img src="Car-Research-Design-Development Public/Prototype 2.png" alt="Prototype 2 render">
+            </div>
+            <div class="proto-title">Prototype 2</div>
+            <div class="stat-row">
+              <div class="stat-pill">
+                <span class="stat-value">0.229N</span>
+                <span class="stat-label">Drag</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">0.025N</span>
+                <span class="stat-label">Lift</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">61g</span>
+                <span class="stat-label">Mass</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">1.3249s</span>
+                <span class="stat-label">Race</span>
+              </div>
+            </div>
+            <p class="proto-desc">Prototype 2 improved on its predecessor by incorporating front and rear airfoils and an optimised ramped front wing to better guide airflow over the front wheels. Sidepods were more convex and thinner with reduced fillet radii, lowering stagnation pressure and overall drag. However, wake formation occurs due to empty space behind the front wheels.</p>
+          </div>
+
+          <!-- Prototype 3 -->
+          <div class="prototype-card">
+            <div class="diagram-media-card" style="height: 24mm;">
+              <img src="Car-Research-Design-Development Public/Prototype 3.png" alt="Prototype 3 render">
+            </div>
+            <div class="proto-title">Prototype 3</div>
+            <div class="stat-row">
+              <div class="stat-pill">
+                <span class="stat-value">0.223N</span>
+                <span class="stat-label">Drag</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">0.047N</span>
+                <span class="stat-label">Lift</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">61g</span>
+                <span class="stat-label">Mass</span>
+              </div>
+              <div class="stat-pill">
+                <span class="stat-value">1.3229s</span>
+                <span class="stat-label">Race</span>
+              </div>
+            </div>
+            <p class="proto-desc">Prototype 3 addressed a major source of pressure drag caused by the wake behind the front wheels by extending the body closer to the wheels. The front wing was also thinned to reduce frontal area, lowering stagnation pressure and drag. However, the rear pods were overly tapered inwards, causing earlier flow separation at the rear and increasing drag.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== RIGHT COLUMN — Current Design & Tools ========== -->
+    <div class="col">
+
+      <!-- R1: CURRENT DESIGN -->
+      <div class="glass-card brackets" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="section-title">Current Design</div>
+        <div class="stat-row" style="margin-top: 0.35mm; margin-bottom: 0.7mm;">
+          <div class="stat-pill">
+            <span class="stat-value">0.192N</span>
+            <span class="stat-label">Drag</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-value">0.005N</span>
+            <span class="stat-label">Lift</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-value">61g</span>
+            <span class="stat-label">Mass</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-value">1.3129s</span>
+            <span class="stat-label">Race</span>
+          </div>
+        </div>
+        <div class="current-design-stack">
+          <div class="current-design-figure">
+            <div class="diagram-media-card" style="max-height: 31.5mm;">
+              <img src="Car-Research-Design-Development Public/Current Design Render.png" alt="Current design render">
+            </div>
+            <p class="current-design-detail">Our current design built on its predecessor by incorporating a rear fin to improve stability and a gradual boat-tail on the rear body to reduce flow separation before the Kammback section. The rear wing was also refined using a symmetrical airfoil with a near-zero angle of attack to minimise drag and lift.</p>
+          </div>
+
+          <div class="current-design-figure">
+            <div class="diagram-media-card zoom" style="max-height: 48mm;">
+              <img src="Car-Research-Design-Development Public/Exploded Design PNG.png" alt="Exploded design of current car components">
+            </div>
+            <p class="fig-caption">Exploded view of the current design components. Credit: Team Successors.</p>
+          </div>
+
+          <div class="current-design-pair">
+            <div class="current-design-figure">
+              <div class="diagram-media-card zoom" style="min-height: 14.5mm;">
+                <img src="Car-Research-Design-Development Public/Engineering Drawing.png" alt="Engineering drawing">
+              </div>
+              <p class="fig-caption">Engineering drawing of the current design. Credit: Team Successors.</p>
+            </div>
+            <div class="current-design-figure">
+              <div class="diagram-media-card zoom" style="min-height: 34mm;">
+                <img src="Car-Research-Design-Development Public/CFD Analysis PNG.png" alt="CFD analysis flow trace">
+              </div>
+              <p class="fig-caption">Flow trace of the current design in ANSYS Discovery.</p>
+            </div>
+          </div>
+
+          <div class="current-design-figure">
+            <div class="diagram-media-card zoom" style="max-height: 51.5mm;">
+              <img src="Car-Research-Design-Development Public/Manufacturing Image PNG.png" alt="Manufacturing image of the printed wing components">
+            </div>
+            <p class="fig-caption">3D-printed front and rear wing components.</p>
+            <p class="current-design-detail">Before 3D printing, measured tolerance was added to allow for sanding and maintain accuracy. The CAD file was then prepared in UltiMaker Cura using high refinement, adaptive layers, and a low layer height to achieve smoother curved surfaces. After printing, the model was sanded progressively from 200-grit to 1000-grit, following the direction of airflow to minimise turbulence-causing micro-grooves.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- R2: SOFTWARE -->
+      <div class="glass-card">
+        <div class="section-title">Software</div>
+        <div class="software-list">
+          <div class="software-item">
+            <div class="software-icon">
+              <img src="Car-Research-Design-Development Public/Fusion 360 Logo.png" alt="Fusion 360 logo">
+            </div>
+            <div class="software-info">
+              <div class="software-name">Autodesk Fusion 360</div>
+              <p class="software-desc">Autodesk Fusion 360 is our primary 3D design platform, combining CAD and CAM while also allowing us to calculate the mass of each prototype.</p>
+            </div>
+          </div>
+          <div class="software-item">
+            <div class="software-icon">
+              <img src="Car-Research-Design-Development Public/ANSYS Discovery Logo.png" alt="ANSYS Discovery logo">
+            </div>
+            <div class="software-info">
+              <div class="software-name">ANSYS Discovery</div>
+              <p class="software-desc">ANSYS Discovery does not provide highly accurate final results, but its intuitive flow trace allows us to quickly identify areas for improvement.</p>
+            </div>
+          </div>
+          <div class="software-item">
+            <div class="software-icon">
+              <img src="Car-Research-Design-Development Public/TurboFlow Logo.png" alt="Turboflow logo">
+            </div>
+            <div class="software-info">
+              <div class="software-name">Turboflow</div>
+              <p class="software-desc">Turboflow is a cloud-based OpenFOAM solver that provides a race-time calculator, competitive results against platforms such as ANSYS Fluent and SimScale, and direct use from Fusion 360.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /body-grid -->
+
+</div><!-- /page -->
+
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Successors — Portfolio Cover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --purple: #3A0CA3;
+    --purple-light: #5A2ED6;
+    --purple-glow: rgba(58, 12, 163, 0.30);
+    --gold: #E5B80B;
+    --gold-dim: rgba(229, 184, 11, 0.5);
+    --gold-glow: rgba(229, 184, 11, 0.12);
+    --light-leak-opacity: 0.50;
+    --obsidian: #050505;
+    --obsidian-card: rgba(255, 255, 255, 0.04);
+    --obsidian-border: rgba(255, 255, 255, 0.08);
+    --white: #FFFFFF;
+    --white-dim: rgba(255, 255, 255, 0.55);
+    --white-muted: rgba(255, 255, 255, 0.35);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+  }
+
+  @page {
+    size: 420mm 297mm;
+    margin: 0;
+  }
+
+  html, body {
+    width: 420mm;
+    height: 297mm;
+    overflow: hidden;
+    background: var(--obsidian);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  body {
+    position: relative;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Purple light leak — bottom-left */
+  body::after {
+    content: '';
+    position: absolute;
+    bottom: -80mm;
+    left: -60mm;
+    width: 280mm;
+    height: 220mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(58, 12, 163, calc(0.30 * var(--light-leak-opacity))) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Gold light leak — top-right */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: -70mm;
+    right: -50mm;
+    width: 240mm;
+    height: 200mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(229, 184, 11, calc(0.08 * var(--light-leak-opacity))) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== PAGE SHELL ===== */
+  .page {
+    position: relative;
+    z-index: 2;
+    width: 420mm;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    padding: 3.6mm 5.5mm;
+  }
+
+  /* ===== GLASS CARD ===== */
+  .glass-card {
+    position: relative;
+    background: var(--obsidian-card);
+    border: 0.3mm solid var(--obsidian-border);
+    border-radius: 1.5mm;
+    padding: 2mm 2.6mm;
+    backdrop-filter: blur(2px);
+    overflow: hidden;
+  }
+
+  /* Tech bracket corners */
+  .glass-card.brackets::before,
+  .glass-card.brackets::after {
+    content: '';
+    position: absolute;
+    width: 4mm;
+    height: 4mm;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .glass-card.brackets::before {
+    top: 1mm;
+    left: 1mm;
+    border-width: 0.3mm 0 0 0.3mm;
+  }
+  .glass-card.brackets::after {
+    bottom: 1mm;
+    right: 1mm;
+    border-width: 0 0.3mm 0.3mm 0;
+  }
+
+  /* Gold glow variant */
+  .glass-card.gold-glow {
+    border-color: rgba(229, 184, 11, 0.12);
+    box-shadow: 0 0 8mm rgba(229, 184, 11, 0.08), inset 0 0 6mm rgba(229, 184, 11, 0.02);
+  }
+
+  /* ===== TYPOGRAPHY TOKENS ===== */
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    margin-bottom: 0.95mm;
+  }
+
+  .body-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.42;
+  }
+
+  .body-text-sm {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.38;
+  }
+
+  /* ===== COVER LAYOUT ===== */
+  .cover-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
+    gap: 3mm;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* ===== LEFT ZONE ===== */
+  .cover-left {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 6.3mm 5.2mm 9.5mm 5.2mm;
+    min-height: 0;
+  }
+
+  /* --- Identity Lockup --- */
+  .cover-identity {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 9.2mm;
+  }
+
+  .cover-logo {
+    height: 39mm;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 4.5mm;
+    filter: drop-shadow(0 0 4mm rgba(229, 184, 11, 0.10));
+  }
+
+  .cover-team-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 48pt;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    line-height: 1.02;
+    margin-top: 2.4mm;
+    margin-bottom: 3mm;
+  }
+
+  .cover-motto {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15.4pt;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--white-dim);
+    letter-spacing: 0.02em;
+    line-height: 1.48;
+    max-width: 88%;
+  }
+
+  /* --- Portfolio Label --- */
+  .cover-portfolio-label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 7.2mm;
+  }
+
+  .cover-portfolio-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 19.4pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 2.2mm;
+  }
+
+  .cover-portfolio-season {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13.2pt;
+    font-weight: 600;
+    color: var(--white-dim);
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+
+  /* --- Spacer --- */
+  .cover-spacer {
+    display: none;
+  }
+
+  /* --- Contents Block --- */
+  .cover-contents {
+    margin-top: auto;
+    min-height: 46mm;
+    padding: 5.1mm 5.3mm 5.5mm;
+  }
+
+  .cover-contents .section-title {
+    font-size: 13.4pt;
+    letter-spacing: 0.15em;
+    margin-bottom: 3mm;
+  }
+
+  .cover-sponsors {
+    position: absolute;
+    right: 5mm;
+    bottom: 9.5mm;
+    z-index: 5;
+    width: 170mm;
+    min-height: 53.5mm;
+    padding: 5.1mm 5.3mm 5.5mm;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cover-sponsors .section-title {
+    font-size: 13.4pt;
+    letter-spacing: 0.15em;
+    margin-bottom: 3mm;
+  }
+
+  .sponsors-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.7mm;
+    align-items: stretch;
+    margin-top: auto;
+  }
+
+  .sponsor-logo-slot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    max-height: 33.5mm;
+    overflow: hidden;
+    padding: 2mm;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.018) 100%),
+      linear-gradient(135deg, rgba(58, 12, 163, 0.07) 0%, rgba(229, 184, 11, 0.03) 100%);
+    border: 0.25mm solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.8mm;
+  }
+
+  .sponsor-logo-slot img {
+    display: block;
+    width: auto;
+    height: 86%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .contents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3mm;
+  }
+
+  .contents-entry {
+    display: flex;
+    align-items: baseline;
+    gap: 3.6mm;
+  }
+
+  .contents-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12.6pt;
+    font-weight: 700;
+    color: var(--gold-dim);
+    letter-spacing: 0.04em;
+    min-width: 9.4mm;
+    flex-shrink: 0;
+  }
+
+  .contents-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13.6pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.28;
+  }
+
+  .contents-divider {
+    flex: 1;
+    border-bottom: 0.2mm dotted rgba(255, 255, 255, 0.08);
+    margin: 0 1mm;
+    align-self: center;
+    transform: translateY(-0.5mm);
+  }
+
+  /* ===== RIGHT ZONE ===== */
+  .cover-right {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .cover-car-render {
+    position: relative;
+    z-index: 1;
+    max-width: none;
+    max-height: none;
+    width: 170%;
+    height: auto;
+    object-fit: contain;
+    transform: translate(-140mm, -75mm) rotate(-1.0deg);
+    transform-origin: 58% 62%;
+    opacity: 0.85;
+    filter: brightness(0.95) contrast(1.0) blur(0mm) drop-shadow(0 1.4mm 4.8mm rgba(0, 0, 0, 0.24));
+  }
+
+  /* ===== PRINT BUTTON ===== */
+  .print-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--obsidian);
+    background: var(--gold);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    box-shadow: 0 2px 12px rgba(229, 184, 11, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .print-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(229, 184, 11, 0.45);
+  }
+
+  @media print {
+    .print-btn { display: none !important; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">PRINT / PDF</button>
+
+<div class="page">
+
+  <div class="cover-layout">
+
+    <!-- ========== LEFT ZONE ========== -->
+    <div class="cover-left">
+
+      <!-- Identity Lockup -->
+      <div class="cover-identity">
+        <img class="cover-logo" src="../TeamSuccessors/public/brand/logo.svg" alt="Team Successors Crown Logo">
+        <div class="cover-team-name">Successors</div>
+        <div class="cover-motto">Inheriting the Legacy. Defining the Future.</div>
+      </div>
+
+      <!-- Portfolio Label -->
+      <div class="cover-portfolio-label">
+        <div class="cover-portfolio-title">Qualifinals Portfolio</div>
+        <div class="cover-portfolio-season">2025 &ndash; 2026</div>
+      </div>
+
+      <!-- Spacer -->
+      <div class="cover-spacer"></div>
+
+      <!-- Contents -->
+      <div class="glass-card brackets cover-contents">
+        <div class="section-title">Contents</div>
+
+        <div class="contents-list">
+          <div class="contents-entry">
+            <span class="contents-num">01</span>
+            <span class="contents-label">Team Identity</span>
+          </div>
+          <div class="contents-entry">
+            <span class="contents-num">02</span>
+            <span class="contents-label">Project Management Plan</span>
+          </div>
+          <div class="contents-entry">
+            <span class="contents-num">03</span>
+            <span class="contents-label">Pit Display Design Ideas</span>
+          </div>
+          <div class="contents-entry">
+            <span class="contents-num">04</span>
+            <span class="contents-label">Car Research &amp; Design Development</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== RIGHT ZONE ========== -->
+    <div class="cover-right">
+      <img class="cover-car-render" src="Cover Public/Cover Car Render PNG.png" alt="Team Successors F1 car cover render">
+
+      <div class="glass-card cover-sponsors">
+        <div class="section-title">Our Sponsors</div>
+
+        <div class="sponsors-row">
+          <div class="sponsor-logo-slot">
+            <img src="Cover Public/VMake Logo.png" alt="VMake logo">
+          </div>
+          <div class="sponsor-logo-slot">
+            <img src="Cover Public/IndianaDelights Logo.png" alt="Indiana Delights logo">
+          </div>
+          <div class="sponsor-logo-slot">
+            <img src="Cover Public/Spicebox Logo.png" alt="Spicebox logo">
+          </div>
+          <div class="sponsor-logo-slot">
+            <img src="Cover Public/Yetkey Logo.png" alt="Yetkey logo">
+          </div>
+          <div class="sponsor-logo-slot">
+            <img src="Cover Public/TurboFlow Logo.png" alt="TurboFlow logo">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

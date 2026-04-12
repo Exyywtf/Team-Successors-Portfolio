@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Successors — Pit Display Design Ideas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --purple: #3A0CA3;
+    --purple-light: #5A2ED6;
+    --purple-glow: rgba(58, 12, 163, 0.30);
+    --gold: #E5B80B;
+    --gold-dim: rgba(229, 184, 11, 0.5);
+    --gold-glow: rgba(229, 184, 11, 0.12);
+    --light-leak-opacity: 0.50;
+    --obsidian: #050505;
+    --obsidian-card: rgba(255, 255, 255, 0.04);
+    --obsidian-border: rgba(255, 255, 255, 0.08);
+    --white: #FFFFFF;
+    --white-dim: rgba(255, 255, 255, 0.65);
+    --white-muted: rgba(255, 255, 255, 0.45);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+  }
+
+  @page {
+    size: 420mm 297mm;
+    margin: 0;
+  }
+
+  html, body {
+    width: 420mm;
+    height: 297mm;
+    overflow: hidden;
+    background: var(--obsidian);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  body {
+    position: relative;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Purple light leak — bottom-left */
+  body::after {
+    content: '';
+    position: absolute;
+    bottom: -80mm;
+    left: -60mm;
+    width: 280mm;
+    height: 220mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(58, 12, 163, calc(0.30 * var(--light-leak-opacity))) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Gold light leak — top-right */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: -70mm;
+    right: -50mm;
+    width: 240mm;
+    height: 200mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(229, 184, 11, calc(0.08 * var(--light-leak-opacity))) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== PAGE SHELL ===== */
+  .page {
+    position: relative;
+    z-index: 2;
+    width: 420mm;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    padding: 3.6mm 5.5mm;
+  }
+
+  /* ===== HEADER STRIP ===== */
+  .header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    height: 9mm;
+    padding: 0 3mm;
+    border-bottom: 0.3mm solid var(--obsidian-border);
+    margin-bottom: 1.6mm;
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    min-width: 0;
+    align-self: end;
+    line-height: 1;
+    transform: translateY(-1.75mm);
+  }
+
+  .header-center {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 17pt;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    justify-self: center;
+    align-self: end;
+    text-align: center;
+    line-height: 1;
+    transform: translateY(-1mm);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: flex-end;
+    gap: 3mm;
+    justify-self: end;
+    align-self: end;
+    transform: translateY(-1.2mm);
+  }
+
+  .header-right img {
+    height: 9mm;
+    width: auto;
+    object-fit: contain;
+    transform: translateY(0);
+  }
+
+  .header-page-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--gold-dim);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  /* ===== 3-COLUMN BODY ===== */
+  .body-grid {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 26fr) minmax(0, 37fr) minmax(0, 37fr);
+    gap: 2.6mm;
+    min-height: 0;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.7mm;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* ===== GLASS CARD ===== */
+  .glass-card {
+    position: relative;
+    background: var(--obsidian-card);
+    border: 0.3mm solid var(--obsidian-border);
+    border-radius: 1.5mm;
+    padding: 2mm 2.6mm;
+    backdrop-filter: blur(2px);
+    overflow: hidden;
+  }
+
+  /* Tech bracket corners */
+  .glass-card.brackets::before,
+  .glass-card.brackets::after {
+    content: '';
+    position: absolute;
+    width: 4mm;
+    height: 4mm;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .glass-card.brackets::before {
+    top: 1mm;
+    left: 1mm;
+    border-width: 0.3mm 0 0 0.3mm;
+  }
+  .glass-card.brackets::after {
+    bottom: 1mm;
+    right: 1mm;
+    border-width: 0 0.3mm 0.3mm 0;
+  }
+
+  /* Gold glow variant */
+  .glass-card.gold-glow {
+    border-color: rgba(229, 184, 11, 0.12);
+    box-shadow: 0 0 8mm rgba(229, 184, 11, 0.08), inset 0 0 6mm rgba(229, 184, 11, 0.02);
+  }
+
+  /* ===== TYPOGRAPHY TOKENS ===== */
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    margin-bottom: 0.95mm;
+  }
+
+  .section-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9.4pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    font-style: italic;
+    margin-bottom: 0.9mm;
+  }
+
+  .body-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.42;
+  }
+
+  .body-text-sm {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.38;
+  }
+
+  .eval-caption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--gold-dim);
+    line-height: 1.4;
+    margin-top: 0.8mm;
+    padding-top: 0.7mm;
+    border-top: 0.2mm solid rgba(229, 184, 11, 0.1);
+  }
+
+  .eval-caption::before {
+    content: '\27D0\0020';
+    font-style: normal;
+  }
+
+  .fig-caption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--gold-dim);
+    line-height: 1.35;
+    margin-top: 0.7mm;
+    text-align: center;
+  }
+
+  .fig-caption::before {
+    content: '\27D0\0020';
+    font-style: normal;
+  }
+
+  /* ===== PLACEHOLDER SYSTEM ===== */
+  .stage-placeholder {
+    width: 100%;
+    border: 0.3mm dashed rgba(229, 184, 11, 0.20);
+    border-radius: 0.8mm;
+    background: linear-gradient(135deg, rgba(58, 12, 163, 0.06) 0%, rgba(229, 184, 11, 0.03) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stage-placeholder-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.25pt;
+    font-weight: 500;
+    color: var(--white-muted);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .stage-media-card {
+    position: relative;
+    width: 100%;
+    border-radius: 0.8mm;
+    overflow: hidden;
+  }
+
+  .stage-media-card img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    border-radius: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.8mm;
+    box-sizing: border-box;
+  }
+
+  .stage-media-card.is-cover img {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .stage-media-split {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.0mm;
+  }
+
+  .stage-media-split-card {
+    height: 100%;
+    border-radius: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.8mm;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .stage-media-split img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .stage-media-label {
+    position: absolute;
+    bottom: 0.8mm;
+    left: 0.8mm;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.25pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.10em;
+    background: rgba(5, 5, 5, 0.8);
+    padding: 0.45mm 1.2mm;
+    border-radius: 0.3mm;
+    backdrop-filter: blur(2px);
+  }
+
+  .source-disclaimer {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7pt;
+    font-weight: 400;
+    color: var(--white-muted);
+    line-height: 1.3;
+    margin-top: 0.5mm;
+  }
+
+  /* ===== CONCEPT / TERM ITEMS ===== */
+  .concept-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5mm;
+    margin-top: 0.5mm;
+  }
+
+  .concept-item {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.38;
+    padding-left: 2.7mm;
+    position: relative;
+  }
+
+  .concept-item strong {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 700;
+  }
+
+  .concept-item::before {
+    content: '\2014';
+    position: absolute;
+    left: 0;
+    color: var(--gold-dim);
+    font-size: 5.8pt;
+    font-weight: 700;
+    top: 0.95em;
+    transform: translateY(-50%);
+  }
+
+  /* ===== PAGE-SPECIFIC: PHASE & PROGRESSION ===== */
+  .phase-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.4pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5mm;
+    opacity: 0.85;
+  }
+
+  .progression-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8pt;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    margin-top: 0.7mm;
+    margin-bottom: 0.3mm;
+  }
+
+  .concept-block {
+    padding-top: 1.5mm;
+    border-top: 0.2mm solid rgba(255, 255, 255, 0.06);
+  }
+
+  .concept-block:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .concept-block-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.4mm;
+  }
+
+  /* ===== PRINT BUTTON ===== */
+  .print-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--obsidian);
+    background: var(--gold);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    box-shadow: 0 2px 12px rgba(229, 184, 11, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .print-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(229, 184, 11, 0.45);
+  }
+
+  @media print {
+    .print-btn { display: none !important; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">PRINT / PDF</button>
+
+<div class="page">
+
+  <!-- ===== HEADER STRIP ===== -->
+  <header class="header">
+    <div class="header-left">Qualifinals Portfolio &middot; 2025-2026</div>
+    <div class="header-center">Pit Display Design Ideas</div>
+    <div class="header-right">
+      <img src="../TeamSuccessors/public/brand/logo.svg" alt="Successors Logo">
+      <span class="header-page-num">03</span>
+    </div>
+  </header>
+
+  <!-- ===== 3-COLUMN BODY ===== -->
+  <div class="body-grid">
+
+    <!-- ========== LEFT COLUMN — Foundation & Thinking ========== -->
+    <div class="col">
+
+      <!-- L1: CONCEPT DEVELOPMENT -->
+      <div class="glass-card brackets" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="section-title">Concept Development</div>
+        <div class="section-subtitle">Two concepts shaping visitor engagement</div>
+        <div class="concept-list" style="flex: 1;">
+          <div class="concept-block">
+            <div class="concept-block-title">Concept 1 — Race Track Display</div>
+            <p class="concept-item">To reflect our connection to the sport, we developed the pit display around the form of a race track, using it to map our journey through the challenges of STEM Racing. Each section operates as a pit stop, representing a distinct stage of development and the technical setbacks that shaped our progress. As visitors move across the track, they are able to follow the growth of Team Successors and understand how each challenge helped us strengthen our identity and move closer to our aim of inheriting the legacy and defining the future as a team across the wider competition journey.</p>
+          </div>
+          <div class="concept-block">
+            <div class="concept-block-title">Concept 2 — Interactive Mini-Game</div>
+            <p class="concept-item">To communicate the aerodynamics behind STEM Racing cars, we are developing an interactive mini-game built around the key engineering features explored throughout our journey as a team. Players drag and drop components such as car bodies and front and rear wings, with each option showing its weight, drag, and key specifications. This allows the player to assemble what they believe is the most effective configuration before racing against a selected team member in a 1v1 challenge.</p>
+            <p class="concept-item" style="margin-top: 0.5mm;">The software uses predetermined values derived from our CFD simulations, developed with the support of our sponsor Turboflow, to calculate the race time of each configuration. Because the number of possible combinations is finite, each setup can be tested accurately, allowing the game to reflect the trade-offs and decision-making involved in the engineering process in a practical way.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- L2: MATERIALS & SUSTAINABILITY -->
+      <div class="glass-card">
+        <div class="section-title">Materials &amp; Sustainability</div>
+        <div class="section-subtitle">Sustainable choices across materials and making</div>
+        <div class="stage-media-card is-cover" style="height: 46mm; margin-top: 0.8mm;">
+          <img src="Pit Display Design Ideas Public/Honeycomb Paper Board.png" alt="Paper-based honeycomb cardboard">
+          <span class="stage-media-label">Paper-Based Honeycomb Cardboard</span>
+        </div>
+        <p class="source-disclaimer">Image sourced from Benz Packaging: https://www.benz-packaging.com.</p>
+        <p class="body-text-sm">Sustainability has been treated as a core consideration throughout the full development of our pit display, shaping both material selection and the wider decisions made by the team. For the backboard and exhibition elements, we prioritised environmentally conscious materials, selecting paper-based honeycomb board, a lightweight engineered material produced from recycled paper waste and made up of 95% recycled content. In addition, all merchandise displayed within the exhibition will reflect more sustainable material choices through our work with Yetkey, our sustainability sponsor. Beyond the physical display itself, our commitment also extends to operating as a carbon-neutral team. Building on the initiative maintained throughout the competition, we will quantify the emissions associated with constructing the pit display, including the transportation of materials, and offset them through a structured tree-planting initiative so that the display is supported by more environmentally responsible decisions.</p>
+        <p class="eval-caption">Our commitment to sustainability carries across the pit display, the car, and the wider competition.</p>
+      </div>
+
+    </div>
+
+    <!-- ========== CENTER COLUMN — Sketch Progression ========== -->
+    <div class="col">
+
+      <!-- C1: DESIGN PROGRESSION OVERVIEW -->
+      <div class="glass-card brackets">
+        <div class="section-title">Design Progression</div>
+        <div class="section-subtitle">From concepts to sketches, CAD, and backboard design</div>
+        <p class="body-text-sm">The pit display developed through a clear sequence, moving from concepts into sketches, then into CAD table studies and the digital backboard. Each stage resolved one part of the design before the final direction was established.</p>
+      </div>
+
+      <!-- C2: SKETCH 1 -->
+      <div class="glass-card">
+        <div class="phase-label">Phase 1 &mdash; Sketches</div>
+        <div class="stage-media-card" style="height: 47mm;">
+          <img src="Pit Display Design Ideas Public/Pit-Display-Drawing-1.png" alt="Pit display drawing concept 1">
+        </div>
+        <div class="progression-title">Initial Layout & Scale</div>
+        <p class="body-text-sm">The first sketch established the working scale for the backboard area. Using a ratio of 1cm:10cm, it turned the initial concept into a measured template that defined the available space, section proportions, and overall layout.</p>
+      </div>
+
+      <!-- C3: SKETCH 2 -->
+      <div class="glass-card">
+        <div class="stage-media-card" style="height: 47mm;">
+          <img src="Pit Display Design Ideas Public/Pit-Display-Drawing-2.png" alt="Pit display drawing concept 2">
+        </div>
+        <div class="progression-title">Comprehensive Layout Development</div>
+        <p class="body-text-sm">The second sketch developed that template into a clearer display plan. It fixed the main section placement and resolved the pit-stop structure well enough to guide the later CAD table work and backboard design.</p>
+      </div>
+
+      <!-- C4: BRIDGE — SKETCHES TO CAD & DIGITAL -->
+      <div class="glass-card" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="phase-label">Sketches &rarr; CAD &amp; Digital</div>
+        <p class="body-text-sm" style="flex: 1;">Once the sketch direction had been fixed, the work split into two outputs: the CAD table model and the digital backboard. The engineers developed the table in CAD, while the graphic designer developed the backboard with the same visuals as the portfolio. Both were then combined together as one pit display.</p>
+        <p class="eval-caption">Working digitally allowed the structural and graphic systems to be refined in parallel.</p>
+      </div>
+
+      <!-- R1: CAD RENDER 1 -->
+      <div class="glass-card">
+        <div class="phase-label">Phase 2 &mdash; CAD &amp; Digital</div>
+        <div class="stage-media-card" style="height: 47mm;">
+          <img src="Pit Display Design Ideas Public/PitDisplay CAD Inital Base.png" alt="Initial CAD table render">
+        </div>
+        <div class="progression-title">Initial CAD Translation</div>
+        <p class="body-text-sm">The first CAD model translated the scaled sketch into an initial three-dimensional table study. Using the 1cm:10cm ratio and the YAS in Schools reference dimensions, it tested how the basic structure would work in real space.</p>
+      </div>
+
+    </div>
+
+    <!-- ========== RIGHT COLUMN — Digital Development & Final Design ========== -->
+    <div class="col">
+
+      <!-- R2: CAD RENDER 2 -->
+      <div class="glass-card">
+        <div class="stage-media-split" style="height: 55mm;">
+          <div class="stage-media-split-card">
+            <img src="Pit Display Design Ideas Public/PitDisplay CAD Left View.png" alt="Left view CAD table render">
+          </div>
+          <div class="stage-media-split-card">
+            <img src="Pit Display Design Ideas Public/PitDisplay CAD Right View.png" alt="Right view CAD table render">
+          </div>
+        </div>
+        <div class="progression-title">Developed CAD Layout</div>
+        <p class="body-text-sm">The second CAD model developed that base into a more resolved table design. It refined the structure, introduced the cardboard overlay and front LEDs, and accounted for the recycled-paper labels before the backboard graphics were combined with it.</p>
+      </div>
+
+      <!-- R3: DIGITAL DESIGN -->
+      <div class="glass-card">
+        <div class="stage-media-card" style="height: 55mm;">
+          <img src="Pit Display Design Ideas Public/Pit-Display-Backboard-FINAL.png" alt="Digital pit display design">
+        </div>
+        <div class="progression-title">Digital Backboard Design</div>
+        <p class="body-text-sm">The digital backboard translated the approved sketch structure into a finished graphic system. It retained the card elements, colour palette, and organisation established across the portfolio, website, and cinematic reel, while using a Bezier-curve Formula 1 track to connect the six pit-stop sections and guide the viewer across the information.</p>
+      </div>
+
+      <!-- R4: FINAL PIT DISPLAY DESIGN -->
+      <div class="glass-card brackets" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="phase-label">Phase 3 &mdash; Final Synthesis</div>
+        <div class="section-title">Final Pit Display Design</div>
+        <div class="stage-media-card" style="flex: 1; height: 75mm;">
+          <img src="Pit Display Design Ideas Public/PitDisplay CAD FinalCohesiveDesign.png" alt="Final pit display design composite">
+        </div>
+        <p class="body-text-sm" style="margin-top: 0.7mm;">The final pit display design brought the CAD table and backboard together into one layout that matched the YAS in Schools dimensions. This made the display clearer, visually stronger, and easier to understand as a whole.</p>
+        <p class="eval-caption">The final design brings the CAD table and backboard system into one coherent display.</p>
+      </div>
+
+    </div>
+
+  </div><!-- /body-grid -->
+
+</div><!-- /page -->
+
+</body>
+</html>

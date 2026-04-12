@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Successors — Pit Display Backboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --purple: #3A0CA3;
+    --purple-light: #5A2ED6;
+    --purple-glow: rgba(58, 12, 163, 0.30);
+    --gold: #E5B80B;
+    --gold-dim: rgba(229, 184, 11, 0.5);
+    --gold-glow: rgba(229, 184, 11, 0.12);
+    --light-leak-opacity: 0.50;
+    --obsidian: #050505;
+    --obsidian-card: rgba(255, 255, 255, 0.04);
+    --obsidian-border: rgba(255, 255, 255, 0.08);
+    --white: #FFFFFF;
+    --white-dim: rgba(255, 255, 255, 0.65);
+    --white-muted: rgba(255, 255, 255, 0.45);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+  }
+
+  @page {
+    size: 420mm 297mm;
+    margin: 0;
+  }
+
+  html, body {
+    width: 420mm;
+    height: 297mm;
+    overflow: hidden;
+    background: var(--obsidian);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  body { position: relative; }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Purple light leak — bottom-left */
+  body::after {
+    content: '';
+    position: absolute;
+    bottom: -80mm;
+    left: -60mm;
+    width: 280mm;
+    height: 220mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(58, 12, 163, calc(0.30 * var(--light-leak-opacity))) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Gold light leak — top-right */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: -70mm;
+    right: -50mm;
+    width: 240mm;
+    height: 200mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(229, 184, 11, calc(0.08 * var(--light-leak-opacity))) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== PAGE SHELL ===== */
+  .page {
+    position: relative;
+    z-index: 2;
+    width: 420mm;
+    height: 297mm;
+  }
+
+  /* ===== MINIMAL HEADER ===== */
+  .backboard-label {
+    position: absolute;
+    top: 3mm;
+    right: 6mm;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.5pt;
+    font-weight: 600;
+    color: var(--white-muted);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    z-index: 10;
+    opacity: 0.6;
+  }
+
+  /* ===== GLASS CARD BASE ===== */
+  .glass-card {
+    position: absolute;
+    background: var(--obsidian-card);
+    border: 0.3mm solid var(--obsidian-border);
+    border-radius: 1.5mm;
+    padding: 2mm 2.6mm;
+    backdrop-filter: blur(2px);
+    overflow: hidden;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .glass-card.brackets::before,
+  .glass-card.brackets::after {
+    content: '';
+    position: absolute;
+    width: 4mm;
+    height: 4mm;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .glass-card.brackets::before {
+    top: 1mm;
+    left: 1mm;
+    border-width: 0.3mm 0 0 0.3mm;
+  }
+  .glass-card.brackets::after {
+    bottom: 1mm;
+    right: 1mm;
+    border-width: 0 0.3mm 0.3mm 0;
+  }
+
+  .glass-card.gold-glow {
+    border-color: rgba(229, 184, 11, 0.12);
+    box-shadow: 0 0 8mm rgba(229, 184, 11, 0.08), inset 0 0 6mm rgba(229, 184, 11, 0.02);
+  }
+
+  /* ===== TYPOGRAPHY TOKENS ===== */
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    margin-bottom: 0.8mm;
+  }
+
+  .body-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.40;
+  }
+
+  .body-text-sm {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7.25pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.36;
+  }
+
+  .fig-caption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7pt;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--gold-dim);
+    line-height: 1.35;
+    margin-top: 0.6mm;
+    text-align: center;
+  }
+
+  .fig-caption::before {
+    content: '\27D0\0020';
+    font-style: normal;
+  }
+
+  /* ===== ROAD / ROUTE BETWEEN CARDS ===== */
+  .road {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 420mm;
+    height: 297mm;
+    pointer-events: none;
+    z-index: 3;
+    overflow: visible;
+  }
+
+  .road-outer {
+    fill: none;
+    stroke: rgba(229, 184, 11, 0.08);
+    stroke-width: 10.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .road-base {
+    fill: none;
+    stroke: rgba(229, 184, 11, 0.30);
+    stroke-width: 4.35;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .road-dash {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.50);
+    stroke-width: 1.05;
+    stroke-linecap: round;
+    stroke-dasharray: 5 3.25;
+  }
+
+  .waypoint-ring {
+    fill: rgba(5, 5, 5, 0.85);
+    stroke: var(--gold);
+    stroke-width: 0.8;
+  }
+
+  .waypoint-dot {
+    fill: var(--gold);
+  }
+
+  .waypoint-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3.8px;
+    font-weight: 800;
+    fill: var(--gold);
+    text-anchor: middle;
+    dominant-baseline: central;
+    letter-spacing: 0.06em;
+  }
+
+  /* ===== CARD POSITIONS — ABSOLUTELY PLACED MODULES ===== */
+
+  /* Row 1: Identity band */
+  .cell--team {
+    left: 10mm;
+    top: 9.5mm;
+    width: 116mm;
+    height: 78mm;
+  }
+
+  .cell--hero {
+    left: 148mm;
+    top: 9.5mm;
+    width: 124mm;
+    height: 78mm;
+  }
+
+  .cell--sponsors {
+    left: 296mm;
+    top: 9.5mm;
+    width: 114mm;
+    height: 78mm;
+  }
+
+  /* Row 2: Pit stops 1 → 2 → 3 */
+  .cell--stop1 {
+    left: 10mm;
+    top: 101.5mm;
+    width: 116mm;
+    height: 84mm;
+  }
+
+  .cell--stop2 {
+    left: 148mm;
+    top: 101.5mm;
+    width: 124mm;
+    height: 84mm;
+  }
+
+  .cell--stop3 {
+    left: 296mm;
+    top: 101.5mm;
+    width: 114mm;
+    height: 84mm;
+  }
+
+  /* Row 3: Pit stops 4 ← 5 ← 6 (visual order: 6 left, 5 center, 4 right) */
+  .cell--stop4 {
+    left: 296mm;
+    top: 201.5mm;
+    width: 114mm;
+    height: 86mm;
+  }
+
+  .cell--stop5 {
+    left: 148mm;
+    top: 201.5mm;
+    width: 124mm;
+    height: 86mm;
+  }
+
+  .cell--stop3,
+  .cell--stop5 {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cell--stop6 {
+    left: 10mm;
+    top: 201.5mm;
+    width: 116mm;
+    height: 86mm;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== TEAM CARD ===== */
+  .team-people-grid {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 0.8mm;
+    min-height: 0;
+  }
+
+  .team-person-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 0.6mm 0.6mm 0 0.6mm;
+    background: linear-gradient(180deg, rgba(58, 12, 163, 0.10) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 0.2mm solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.9mm;
+    overflow: hidden;
+  }
+
+  .team-person-media {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 12mm;
+    border-radius: 0.6mm;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top right, rgba(229, 184, 11, 0.14), transparent 48%),
+      linear-gradient(180deg, rgba(58, 12, 163, 0.16) 0%, rgba(5, 5, 5, 0.02) 100%);
+  }
+
+  .team-person-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(5, 5, 5, 0) 62%, rgba(5, 5, 5, 0.15) 84%, rgba(5, 5, 5, 0.28) 100%);
+    pointer-events: none;
+  }
+
+  .team-person-media img {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    filter: drop-shadow(0 1.2mm 2mm rgba(0, 0, 0, 0.28));
+  }
+
+  .team-person-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0.6mm 0 0.5mm 0;
+    text-align: center;
+  }
+
+  .team-person-role {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.32mm 0.9mm;
+    margin-bottom: 0.22mm;
+    border-radius: 999px;
+    border: 0.2mm solid rgba(229, 184, 11, 0.18);
+    background: rgba(229, 184, 11, 0.08);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4.6pt;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .team-person-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5.8pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.18;
+    text-align: center;
+  }
+
+  .cell--team .section-title,
+  .cell--sponsors .section-title {
+    width: 100%;
+    font-size: 11.65pt;
+    text-align: center;
+  }
+
+  /* ===== HERO / WHO WE ARE ===== */
+  .cell--hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2.4mm 4mm 2.6mm;
+  }
+
+  .hero-main {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(-2mm);
+  }
+
+  .hero-logo {
+    height: 18.5mm;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 3.5mm rgba(229, 184, 11, 0.18));
+  }
+
+  .hero-wordmark {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22.8pt;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-top: 1.2mm;
+  }
+
+  .hero-motto {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9.15pt;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--gold-dim);
+    letter-spacing: 0.04em;
+    margin-top: 0.8mm;
+  }
+
+  .hero-divider {
+    width: 50%;
+    height: 0;
+    border: none;
+    border-top: 0.2mm solid rgba(229, 184, 11, 0.18);
+    margin-top: 1.8mm;
+  }
+
+  .hero-who-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.8pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    margin-top: 1.2mm;
+  }
+
+  .hero-who-body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7.4pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.38;
+    margin-top: 0.8mm;
+    text-align: center;
+  }
+
+  .hero-school {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 6.5pt;
+    font-weight: 600;
+    color: var(--white-muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-top: 0;
+    padding-top: 1mm;
+  }
+
+  /* ===== SPONSORS ===== */
+  .sponsors-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    gap: 1.2mm;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 0.6mm;
+  }
+
+  .sponsor-logo-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 1.2mm;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.018) 100%),
+      linear-gradient(135deg, rgba(58, 12, 163, 0.07) 0%, rgba(229, 184, 11, 0.03) 100%);
+    border: 0.25mm solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.8mm;
+  }
+
+  .sponsor-logo-slot.wide { grid-column: 1 / span 2; }
+
+  .sponsor-logo-slot img {
+    display: block;
+    width: auto;
+    height: 80%;
+    max-width: 90%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  /* ===== PIT STOP HEADER ===== */
+  .pit-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 0.45mm;
+    margin-bottom: 0.45mm;
+    flex-shrink: 0;
+  }
+
+  .pit-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.52mm 1.35mm;
+    border-radius: 999px;
+    border: 0.25mm solid rgba(229, 184, 11, 0.32);
+    background: rgba(229, 184, 11, 0.10);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.35pt;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .pit-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11.65pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    line-height: 0.96;
+    text-align: center;
+  }
+
+  /* ===== IMAGE CARDS ===== */
+  .diagram-media-card {
+    position: relative;
+    border-radius: 0.8mm;
+    overflow: hidden;
+  }
+
+  .diagram-media-card img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    border-radius: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.6mm;
+  }
+
+  .diagram-media-card.fill img {
+    object-fit: cover;
+    padding: 0;
+  }
+
+  /* ===== STOP BODY LAYOUTS ===== */
+
+  /* Stops 1, 2: text + single image */
+  .stop-simple-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1mm;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .stop-simple-body .diagram-media-card {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* Stop 3: text + 2×2 image grid */
+  .stop3-media-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1mm;
+    flex: 0 0 auto;
+    height: 53.5mm;
+  }
+
+  .stop3-media-row .diagram-media-card {
+    min-height: 0;
+  }
+
+  .stop3-sketch-card {
+    padding: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    border-radius: 0.6mm;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .stop3-sketch-grid {
+    --stop3-sketch-gap: 0.45mm;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(2, calc((100% - var(--stop3-sketch-gap)) / 2));
+    gap: var(--stop3-sketch-gap);
+  }
+
+  .stop3-sketch-grid img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 0.45mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.35mm;
+  }
+
+  /* Stop 4: 2×2 event photos + caption */
+  .stop4-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8mm;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .stop4-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.8mm;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .stop4-grid .diagram-media-card { min-height: 0; }
+
+  /* Stop 5: 2 images on top + wide image below */
+  .stop5-media-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1mm;
+    flex: 0 0 auto;
+    height:56mm;
+  }
+
+  .stop5-media-row .diagram-media-card {
+    min-height: 0;
+  }
+
+  .stop5-media-row .diagram-media-card--wide {
+    grid-column: 1 / span 2;
+  }
+
+  .cell--stop3 .stop-simple-body,
+  .cell--stop5 .stop-simple-body {
+    gap: 0;
+    justify-content: space-between;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .cell--stop3 .body-text,
+  .cell--stop5 .body-text {
+    margin: 0;
+  }
+
+  /* Stop 6: 3 stacked image+text rows */
+  .stop6-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45mm;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .stop6-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.3mm;
+    align-items: start;
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+  }
+
+  .stop6-row .diagram-media-card {
+    width: 100%;
+    height: 13.8mm;
+    padding: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    border-radius: 0.8mm;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .stop6-row .diagram-media-card img {
+    object-fit: contain;
+    object-position: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    transform: scale(var(--stop6-image-zoom, 1));
+    transform-origin: center;
+  }
+
+  .stop6-row--content {
+    --stop6-image-zoom: 9.5;
+  }
+
+  .stop6-row--digital {
+    --stop6-image-zoom: 1.3;
+  }
+
+  .stop6-row strong {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.5pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.3mm;
+  }
+
+  .stop6-row p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 6.6pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.34;
+  }
+
+  .print-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--obsidian);
+    background: var(--gold);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    box-shadow: 0 2px 12px rgba(229, 184, 11, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .print-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(229, 184, 11, 0.45);
+  }
+
+  @media print {
+    .print-btn { display: none !important; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
+  }
+
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">PRINT / PDF</button>
+
+<div class="page">
+
+  <!-- Minimal label — replaces the old full header -->
+
+  <!-- ===== ROAD — runs through the negative space between cards ===== -->
+  <!--
+    Route: Stop1 right-edge → Stop2 left-edge → Stop2 right-edge → Stop3 left-edge
+    → Stop3 bottom-edge → Stop4 top-edge → Stop4 left-edge → Stop5 right-edge
+    → Stop5 left-edge → Stop6 right-edge
+
+    Coordinates match the absolute card positions (in mm).
+    Card edges used as anchor points:
+
+    Stop1: right edge at x=122, vertical center y=132
+    Stop2: left edge at x=154, center y=130   |  right edge at x=266, center y=130
+    Stop3: left edge at x=298, center y=132   |  bottom edge at x=352, y=164
+    Stop4: top edge at x=352, y=200           |  left edge at x=298, center y=233
+    Stop5: right edge at x=266, center y=231  |  left edge at x=154, center y=231
+    Stop6: right edge at x=122, center y=233
+  -->
+  <svg class="road" viewBox="0 0 420 297" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <filter id="road-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <mask id="road-card-mask">
+        <rect x="0" y="0" width="420" height="297" fill="#ffffff"/>
+        <rect x="10" y="9.5" width="116" height="78" rx="1.5" ry="1.5" fill="#666666"/>
+        <rect x="148" y="9.5" width="124" height="78" rx="1.5" ry="1.5" fill="#666666"/>
+        <rect x="296" y="9.5" width="114" height="78" rx="1.5" ry="1.5" fill="#666666"/>
+        <rect x="10" y="101.5" width="116" height="84" rx="1.5" ry="1.5" fill="#666666"/>
+        <rect x="148" y="101.5" width="124" height="84" rx="1.5" ry="1.5" fill="#666666"/>
+        <rect x="296" y="101.5" width="114" height="84" rx="1.5" ry="1.5" fill="#666666"/>
+        <rect x="296" y="201.5" width="114" height="86" rx="1.5" ry="1.5" fill="#666666"/>
+        <rect x="148" y="201.5" width="124" height="86" rx="1.5" ry="1.5" fill="#666666"/>
+        <rect x="10" y="201.5" width="116" height="86" rx="1.5" ry="1.5" fill="#666666"/>
+      </mask>
+    </defs>
+
+    <!-- Segment 1→2: horizontal through gap -->
+    <g mask="url(#road-card-mask)">
+      <path class="road-outer" d="M 68 143.5 C 92 132, 116 129, 138 134 C 162 140, 180 154, 206 149 C 232 144, 248 132, 272 134 C 296 136, 322 149, 342 164 C 356 175, 362 187, 360 202 C 358 218, 348 231, 332 240 C 314 249, 294 250, 274 246 C 252 241, 234 234, 214 238 C 192 243, 174 255, 152 255 C 126 255, 100 250, 68 244.5"/>
+      <path class="road-base"  d="M 68 143.5 C 92 132, 116 129, 138 134 C 162 140, 180 154, 206 149 C 232 144, 248 132, 272 134 C 296 136, 322 149, 342 164 C 356 175, 362 187, 360 202 C 358 218, 348 231, 332 240 C 314 249, 294 250, 274 246 C 252 241, 234 234, 214 238 C 192 243, 174 255, 152 255 C 126 255, 100 250, 68 244.5"/>
+      <path class="road-dash"  d="M 68 143.5 C 92 132, 116 129, 138 134 C 162 140, 180 154, 206 149 C 232 144, 248 132, 272 134 C 296 136, 322 149, 342 164 C 356 175, 362 187, 360 202 C 358 218, 348 231, 332 240 C 314 249, 294 250, 274 246 C 252 241, 234 234, 214 238 C 192 243, 174 255, 152 255 C 126 255, 100 250, 68 244.5"/>
+    </g>
+
+    <!-- Segment 2→3: horizontal through gap -->
+
+    <!-- Segment 3→4: vertical drop through gap (the big turn) -->
+
+    <!-- Segment 4→5: horizontal through gap (going left) -->
+
+    <!-- Segment 5→6: horizontal through gap (going left) -->
+
+    <!-- Waypoint nodes — sit at card edges in the gap space -->
+  </svg>
+
+  <!-- ===== ROW 1 — MEET THE TEAM ===== -->
+  <section class="cell--team glass-card brackets">
+    <div class="section-title">Meet the Team</div>
+    <div class="team-people-grid">
+      <div class="team-person-card">
+        <div class="team-person-media">
+          <img src="../TeamSuccessors/public/photos/team/yahya-headshot.png" alt="Yahya Murad headshot">
+        </div>
+        <div class="team-person-copy">
+          <div class="team-person-role">Team Principal</div>
+          <div class="team-person-name">Yahya Murad</div>
+        </div>
+      </div>
+      <div class="team-person-card">
+        <div class="team-person-media">
+          <img src="../TeamSuccessors/public/photos/team/adam-headshot.png" alt="Adam Hussien headshot">
+        </div>
+        <div class="team-person-copy">
+          <div class="team-person-role">Head of Enterprise</div>
+          <div class="team-person-name">Adam Hussien</div>
+        </div>
+      </div>
+      <div class="team-person-card">
+        <div class="team-person-media">
+          <img src="../TeamSuccessors/public/photos/team/sajjad-headshot.png" alt="Sajjad Jahanzad headshot">
+        </div>
+        <div class="team-person-copy">
+          <div class="team-person-role">Head of Engineering</div>
+          <div class="team-person-name">Sajjad Jahanzad</div>
+        </div>
+      </div>
+      <div class="team-person-card">
+        <div class="team-person-media">
+          <img src="../TeamSuccessors/public/photos/team/ahmed-headshot.png" alt="Ahmed Lebdah headshot">
+        </div>
+        <div class="team-person-copy">
+          <div class="team-person-role">Analytical Engineer</div>
+          <div class="team-person-name">Ahmed Lebdah</div>
+        </div>
+      </div>
+      <div class="team-person-card">
+        <div class="team-person-media">
+          <img src="../TeamSuccessors/public/photos/team/piyush-headshot.png" alt="Piyush Garg headshot">
+        </div>
+        <div class="team-person-copy">
+          <div class="team-person-role">Design Engineer</div>
+          <div class="team-person-name">Piyush Garg</div>
+        </div>
+      </div>
+      <div class="team-person-card">
+        <div class="team-person-media">
+          <img src="../TeamSuccessors/public/photos/team/vihaann-headshot.png" alt="Vihaann Goswami headshot">
+        </div>
+        <div class="team-person-copy">
+          <div class="team-person-role">Graphic Designer</div>
+          <div class="team-person-name">Vihaann Goswami</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ROW 1 — HERO / WHO WE ARE ===== -->
+  <section class="cell--hero glass-card gold-glow">
+    <div class="hero-main">
+      <img class="hero-logo" src="../TeamSuccessors/public/brand/logo.svg" alt="Team Successors crown logo">
+      <div class="hero-wordmark">Successors</div>
+      <div class="hero-motto">Inheriting the Legacy. Defining the Future.</div>
+
+      <hr class="hero-divider">
+      <div class="hero-who-title">Who We Are</div>
+      <p class="hero-who-body">
+        We are the GEMS Founders School F1 in Schools team, built to carry forward an unfinished mission.
+        After the inaugural team secured 6th place and two category awards, our aim became clear:
+        complete the story by becoming national champions and raising the UAE flag on the world&rsquo;s most prestigious STEM stage.
+      </p>
+    </div>
+
+    <div class="hero-school">GEMS Founders School &middot; Dubai, UAE</div>
+  </section>
+
+  <!-- ===== ROW 1 — SPONSORS ===== -->
+  <section class="cell--sponsors glass-card brackets">
+    <div class="section-title">Our Sponsors</div>
+    <div class="sponsors-row">
+      <div class="sponsor-logo-slot wide">
+        <img src="Cover Public/VMake Logo.png" alt="VMake logo">
+      </div>
+      <div class="sponsor-logo-slot">
+        <img src="Cover Public/IndianaDelights Logo.png" alt="Indiana Delights logo">
+      </div>
+      <div class="sponsor-logo-slot">
+        <img src="Cover Public/Spicebox Logo.png" alt="Spicebox logo">
+      </div>
+      <div class="sponsor-logo-slot">
+        <img src="Cover Public/Yetkey Logo.png" alt="Yetkey logo">
+      </div>
+      <div class="sponsor-logo-slot">
+        <img src="Cover Public/TurboFlow Logo.png" alt="TurboFlow logo">
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PIT STOP 01 ===== -->
+  <section class="cell--stop1 glass-card">
+    <div class="pit-head">
+      <span class="pit-chip">Pit Stop &middot; 01</span>
+      <span class="pit-title">Team &amp; Sponsor Outlook</span>
+    </div>
+    <div class="stop-simple-body">
+      <p class="body-text">
+        Our sponsors receive more than logo placement on a car. They are integrated
+        into a focused marketing and outreach system built around a high-performance
+        story, giving them visibility, trust, and measurable impact across activations,
+        content, and the national finals race window.
+      </p>
+      <div class="diagram-media-card">
+        <img src="Project Management Plan Public/Sponsor Approach Flowchart PNG.png" alt="Sponsor approach flowchart">
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PIT STOP 02 ===== -->
+  <section class="cell--stop2 glass-card">
+    <div class="pit-head">
+      <span class="pit-chip">Pit Stop &middot; 02</span>
+      <span class="pit-title">Event Planning</span>
+    </div>
+    <div class="stop-simple-body">
+      <p class="body-text">
+        To guide delivery, we framed the project scope statement as a contract that defined
+        objectives, deliverables, constraints, and ownership. This helped us maintain quality
+        across event planning, with sponsor tier shaping the scale of each activation and its
+        outreach. These included International Day for all sponsors, alongside an Ethara
+        collaboration and an AI-driven workshop that connected our turbo sponsor, Spicebox, with future engineers.
+      </p>
+      <div class="diagram-media-card">
+        <img src="Project Management Plan Public/Project Scope Contract PNG.png" alt="Project scope contract diagram">
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PIT STOP 03 ===== -->
+  <section class="cell--stop3 glass-card">
+    <div class="pit-head">
+      <span class="pit-chip">Pit Stop &middot; 03</span>
+      <span class="pit-title">CAD Design</span>
+    </div>
+    <div class="stop-simple-body">
+      <p class="body-text">
+        Our design philosophy centres on identifying the limits of the technical
+        regulations and using aerodynamic principles to exploit the most effective
+        areas within them. Fusion 360, ANSYS Discovery, and TurboFlow support an
+        iterative process from early geometry to validated airflow.
+      </p>
+      <div class="stop3-media-row">
+        <div class="diagram-media-card stop3-sketch-card">
+          <div class="stop3-sketch-grid">
+            <img src="Car-Research-Design-Development Public/Sketch 1.png" alt="Concept sketch 1">
+            <img src="Car-Research-Design-Development Public/Sketch 2.png" alt="Concept sketch 2">
+            <img src="Car-Research-Design-Development Public/Sketch 3.png" alt="Concept sketch 3">
+            <img src="Car-Research-Design-Development Public/Sketch 4.png" alt="Concept sketch 4">
+          </div>
+        </div>
+        <div class="diagram-media-card">
+          <img src="Car-Research-Design-Development Public/Inital Designs.png" alt="Initial design concepts">
+        </div>
+        <div class="diagram-media-card">
+          <img src="Car-Research-Design-Development Public/Current Design Render.png" alt="Current design render">
+        </div>
+        <div class="diagram-media-card">
+          <img src="Car-Research-Design-Development Public/CFD Analysis PNG.png" alt="CFD analysis render">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PIT STOP 04 ===== -->
+  <section class="cell--stop4 glass-card">
+    <div class="pit-head">
+      <span class="pit-chip">Pit Stop &middot; 04</span>
+      <span class="pit-title">Events</span>
+    </div>
+    <div class="stop4-body">
+      <div class="stop4-grid">
+        <div class="diagram-media-card fill">
+          <img src="../TeamSuccessors/public/photos/gallery/enterprise/international-day-racing-sim-event.jpeg" alt="Racing simulator at International Day">
+        </div>
+        <div class="diagram-media-card fill">
+          <img src="../TeamSuccessors/public/photos/gallery/enterprise/international-day-backboards-event.jpeg" alt="Pit display backboards at International Day">
+        </div>
+        <div class="diagram-media-card fill">
+          <img src="../TeamSuccessors/public/photos/gallery/enterprise/international-day-car-keychains-event.jpeg" alt="3D-printed keychain giveaways">
+        </div>
+        <div class="diagram-media-card fill">
+          <img src="../TeamSuccessors/public/photos/gallery/enterprise/international-day-group-photo-event.jpeg" alt="Team group photo at International Day">
+        </div>
+      </div>
+      <p class="fig-caption">Showcasing our brand, sponsor network, and engineering journey to more than 3,000 attendees and school stakeholders.</p>
+    </div>
+  </section>
+
+  <!-- ===== PIT STOP 05 ===== -->
+  <section class="cell--stop5 glass-card">
+    <div class="pit-head">
+      <span class="pit-chip">Pit Stop &middot; 05</span>
+      <span class="pit-title">Car Manufacturing</span>
+    </div>
+    <div class="stop-simple-body">
+      <div class="stop5-media-row">
+        <div class="diagram-media-card">
+          <img src="Car-Research-Design-Development Public/Manufacturing Image PNG.png" alt="Manufacturing process">
+        </div>
+        <div class="diagram-media-card">
+          <img src="Car-Research-Design-Development Public/Engineering Drawing.png" alt="Engineering drawing">
+        </div>
+        <div class="diagram-media-card diagram-media-card--wide">
+          <img src="Car-Research-Design-Development Public/Exploded Design PNG.png" alt="Exploded car assembly">
+        </div>
+      </div>
+      <p class="body-text">
+        Before 3D printing, measured tolerance is added to allow for sanding while maintaining
+        accuracy. The CAD file is prepared in UltiMaker Cura with adaptive layers and a low
+        layer height to achieve smoother curved surfaces. After printing, the model is sanded from
+        200-grit to 1000-grit along the direction of airflow.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== PIT STOP 06 ===== -->
+  <section class="cell--stop6 glass-card">
+    <div class="pit-head">
+      <span class="pit-chip">Pit Stop &middot; 06</span>
+      <span class="pit-title">Marketing &amp; Media</span>
+    </div>
+    <div class="stop6-body">
+      <div class="stop6-row stop6-row--content">
+        <div class="diagram-media-card">
+          <img src="Team-Identity Public/Instagram Reel - Screenshot.png" alt="Instagram reel screenshot">
+        </div>
+        <div>
+          <strong>Content</strong>
+          <p>One example is the cinematic reel we built in code, turning a key milestone into a polished and shareable story.</p>
+        </div>
+      </div>
+      <div class="stop6-row stop6-row--digital">
+        <div class="diagram-media-card">
+          <img src="Team-Identity Public/Website-Hero Website -Screenshot.png" alt="Team Successors website hero">
+        </div>
+        <div>
+          <strong>Digital Presence</strong>
+          <p>A sponsor-facing digital platform gives sponsors clearer access to updates, progress, and key information throughout the project.</p>
+        </div>
+      </div>
+      <div class="stop6-row">
+        <div class="diagram-media-card">
+          <img src="Project Management Plan Public/Marketing Strategy Mindmap PNG.png" alt="Marketing strategy mindmap">
+        </div>
+        <div>
+          <strong>Community Reach</strong>
+          <p>STEM engagement that connects competition excellence with accessible learning and a reach of more than 6,000 students.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>

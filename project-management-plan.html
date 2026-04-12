@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Successors — Project Management Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --purple: #3A0CA3;
+    --purple-light: #5A2ED6;
+    --purple-glow: rgba(58, 12, 163, 0.30);
+    --gold: #E5B80B;
+    --gold-dim: rgba(229, 184, 11, 0.5);
+    --gold-glow: rgba(229, 184, 11, 0.12);
+    --light-leak-opacity: 0.50;
+    --obsidian: #050505;
+    --obsidian-card: rgba(255, 255, 255, 0.04);
+    --obsidian-border: rgba(255, 255, 255, 0.08);
+    --white: #FFFFFF;
+    --white-dim: rgba(255, 255, 255, 0.65);
+    --white-muted: rgba(255, 255, 255, 0.45);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+  }
+
+  @page {
+    size: 420mm 297mm;
+    margin: 0;
+  }
+
+  html, body {
+    width: 420mm;
+    height: 297mm;
+    overflow: hidden;
+    background: var(--obsidian);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  body {
+    position: relative;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Purple light leak — bottom-left */
+  body::after {
+    content: '';
+    position: absolute;
+    bottom: -80mm;
+    left: -60mm;
+    width: 280mm;
+    height: 220mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(58, 12, 163, calc(0.30 * var(--light-leak-opacity))) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Gold light leak — top-right */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: -70mm;
+    right: -50mm;
+    width: 240mm;
+    height: 200mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(229, 184, 11, calc(0.08 * var(--light-leak-opacity))) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== PAGE SHELL ===== */
+  .page {
+    position: relative;
+    z-index: 2;
+    width: 420mm;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    padding: 3.6mm 5.5mm;
+  }
+
+  /* ===== HEADER STRIP ===== */
+  .header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    height: 9mm;
+    padding: 0 3mm;
+    border-bottom: 0.3mm solid var(--obsidian-border);
+    margin-bottom: 1.6mm;
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    min-width: 0;
+    align-self: end;
+    line-height: 1;
+    transform: translateY(-1.75mm);
+  }
+
+  .header-center {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 17pt;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    justify-self: center;
+    align-self: end;
+    text-align: center;
+    line-height: 1;
+    transform: translateY(-1mm);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: flex-end;
+    gap: 3mm;
+    justify-self: end;
+    align-self: end;
+    transform: translateY(-1.2mm);
+  }
+
+  .header-right img {
+    height: 9mm;
+    width: auto;
+    object-fit: contain;
+    transform: translateY(0);
+  }
+
+  .header-page-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--gold-dim);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  /* ===== 3-COLUMN BODY ===== */
+  .body-grid {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 29fr) minmax(0, 46fr) minmax(0, 25fr);
+    gap: 2.6mm;
+    min-height: 0;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.7mm;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* ===== GLASS CARD ===== */
+  .glass-card {
+    position: relative;
+    background: var(--obsidian-card);
+    border: 0.3mm solid var(--obsidian-border);
+    border-radius: 1.5mm;
+    padding: 2mm 2.6mm;
+    backdrop-filter: blur(2px);
+    overflow: hidden;
+  }
+
+  /* Tech bracket corners */
+  .glass-card.brackets::before,
+  .glass-card.brackets::after {
+    content: '';
+    position: absolute;
+    width: 4mm;
+    height: 4mm;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .glass-card.brackets::before {
+    top: 1mm;
+    left: 1mm;
+    border-width: 0.3mm 0 0 0.3mm;
+  }
+  .glass-card.brackets::after {
+    bottom: 1mm;
+    right: 1mm;
+    border-width: 0 0.3mm 0.3mm 0;
+  }
+
+  /* Gold glow variant */
+  .glass-card.gold-glow {
+    border-color: rgba(229, 184, 11, 0.12);
+    box-shadow: 0 0 8mm rgba(229, 184, 11, 0.08), inset 0 0 6mm rgba(229, 184, 11, 0.02);
+  }
+
+  /* ===== TYPOGRAPHY TOKENS ===== */
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    margin-bottom: 0.95mm;
+  }
+
+  .section-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    font-style: italic;
+    margin-bottom: 0.9mm;
+  }
+
+  .body-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.42;
+  }
+
+  .body-text-sm {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.38;
+  }
+
+  .eval-caption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--gold-dim);
+    line-height: 1.4;
+    margin-top: 0.8mm;
+    padding-top: 0.7mm;
+    border-top: 0.2mm solid rgba(229, 184, 11, 0.1);
+  }
+
+  .eval-caption::before {
+    content: '\27D0\0020';
+    font-style: normal;
+  }
+
+  .fig-caption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--gold-dim);
+    line-height: 1.35;
+    margin-top: 0.7mm;
+    text-align: center;
+  }
+
+  .fig-caption::before {
+    content: '\27D0\0020';
+    font-style: normal;
+  }
+
+  /* ===== PLACEHOLDER SYSTEM ===== */
+  .stage-placeholder {
+    width: 100%;
+    border: 0.3mm dashed rgba(229, 184, 11, 0.20);
+    border-radius: 0.8mm;
+    background: linear-gradient(135deg, rgba(58, 12, 163, 0.06) 0%, rgba(229, 184, 11, 0.03) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stage-placeholder-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.25pt;
+    font-weight: 500;
+    color: var(--white-muted);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  /* ===== CONCEPT / TERM LIST ===== */
+  .concept-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5mm;
+    margin-top: 0.5mm;
+  }
+
+  .concept-item {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.38;
+  }
+
+  .concept-item strong {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 700;
+    color: inherit;
+    letter-spacing: 0;
+  }
+
+  /* ===== TOOLS LIST ===== */
+  .tools-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35mm;
+    margin-top: 0.3mm;
+  }
+
+  .tools-list-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.3mm;
+    margin-top: 0.6mm;
+  }
+
+  .tool-item {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7.25pt;
+    font-weight: 400;
+    color: var(--white-muted);
+    line-height: 1.34;
+    padding-left: 2.7mm;
+    position: relative;
+  }
+
+  .tool-item::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold-dim);
+    font-size: 6pt;
+  }
+
+  .enterprise-tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.1mm 1.35mm;
+    margin-top: 0.35mm;
+  }
+
+  .enterprise-tool {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.35mm;
+    min-width: 0;
+  }
+
+  .enterprise-tool-icon {
+    width: 7.4mm;
+    height: 7.4mm;
+    flex-shrink: 0;
+    border-radius: 0.8mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .enterprise-tool-icon span {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4.2pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .enterprise-tool-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 0.6mm;
+    padding: 0;
+  }
+
+  .enterprise-tool-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .enterprise-tool-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.35pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2mm;
+    line-height: 1.18;
+  }
+
+  .enterprise-tool-desc {
+    font-size: 5.95pt;
+    color: var(--white-muted);
+    line-height: 1.28;
+    margin: 0;
+  }
+
+  /* ===== RACI GRID ===== */
+  .raci-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.8mm;
+    margin: 0.7mm 0;
+  }
+
+  .raci-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.8mm 0.6mm;
+    background: rgba(58, 12, 163, 0.12);
+    border: 0.2mm solid rgba(58, 12, 163, 0.2);
+    border-radius: 0.6mm;
+  }
+
+  .raci-letter {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8pt;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+  }
+
+  .raci-label {
+    font-size: 5.5pt;
+    font-weight: 700;
+    color: var(--white-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .raci-desc {
+    font-size: 6pt;
+    color: var(--white-muted);
+    line-height: 1.28;
+    text-align: center;
+    margin-top: 0.2mm;
+  }
+
+  /* ===== STRATEGY STEPS ===== */
+  .strategy-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8mm;
+    margin-top: 0.5mm;
+  }
+
+  .strategy-step {
+    display: flex;
+    flex-direction: column;
+    padding: 1.2mm 1.5mm 1.3mm;
+    background: rgba(58, 12, 163, 0.05);
+    border: 0.2mm solid rgba(58, 12, 163, 0.10);
+    border-radius: 0.8mm;
+  }
+
+  .step-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7pt;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.15mm;
+  }
+
+  .step-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.35mm;
+  }
+
+  .step-text {
+    font-size: 6.75pt;
+    color: var(--white-muted);
+    line-height: 1.34;
+  }
+
+  .step-text strong {
+    font-weight: 600;
+    color: var(--white-dim);
+  }
+
+  .swot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1mm;
+    margin-top: 0.5mm;
+  }
+
+  .swot-block {
+    display: flex;
+    flex-direction: column;
+    padding: 1.2mm 1.4mm;
+    background: rgba(58, 12, 163, 0.12);
+    border: 0.2mm solid rgba(58, 12, 163, 0.2);
+    border-radius: 0.8mm;
+  }
+
+  .swot-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5.5pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.07em;
+    margin-bottom: 0.3mm;
+  }
+
+  .swot-text {
+    font-size: 5.75pt;
+    color: var(--white-muted);
+    line-height: 1.34;
+  }
+
+  .swot-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2mm;
+  }
+
+  .swot-list li {
+    font-size: 5.75pt;
+    color: var(--white-muted);
+    line-height: 1.34;
+    padding-left: 2.7mm;
+    position: relative;
+  }
+
+  .swot-list li::before {
+    content: '\2014';
+    position: absolute;
+    left: 0;
+    color: var(--gold-dim);
+    font-size: 5pt;
+  }
+
+  .tactics-table-card {
+    --tactics-card-radius: 0.8mm;
+    --tactics-card-inset: 0.8mm;
+    position: relative;
+    border-radius: var(--tactics-card-radius);
+    overflow: hidden;
+    padding: 0.8mm;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.058) 0%, rgba(255, 255, 255, 0.018) 48%, rgba(255, 255, 255, 0.03) 100%),
+      linear-gradient(180deg, rgba(10, 10, 14, 0.98) 0%, rgba(18, 18, 24, 0.94) 100%);
+    border: 0.25mm solid rgba(255, 255, 255, 0.09);
+    box-shadow: inset 0 0 0.8mm rgba(255, 255, 255, 0.015);
+    backdrop-filter: blur(8px) saturate(118%);
+  }
+
+  .tactics-table-frame {
+    height: 100%;
+    border-radius: calc(var(--tactics-card-radius) - var(--tactics-card-inset));
+    border: 0.2mm solid rgba(255, 255, 255, 0.10);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.01) 100%),
+      linear-gradient(180deg, rgba(8, 8, 11, 0.96) 0%, rgba(14, 14, 18, 0.92) 100%);
+    overflow: hidden;
+    padding: 0.8mm;
+    backdrop-filter: blur(10px) saturate(120%);
+  }
+
+  .tactics-table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .tactics-table th,
+  .tactics-table td {
+    padding: 0.92mm 1.02mm;
+    border-right: 0.18mm solid rgba(255, 255, 255, 0.075);
+    border-bottom: 0.18mm solid rgba(255, 255, 255, 0.075);
+    vertical-align: top;
+  }
+
+  .tactics-table th:last-child,
+  .tactics-table td:last-child {
+    border-right: 0;
+  }
+
+  .tactics-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .tactics-table th {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.35pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.024) 100%);
+  }
+
+  .tactics-table td {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 6.45pt;
+    font-weight: 400;
+    color: var(--white-muted);
+    line-height: 1.32;
+  }
+
+  .tactics-table td:first-child {
+    color: var(--white-dim);
+    font-weight: 600;
+  }
+
+  .communication-table td,
+  .communication-table td:first-child {
+    color: var(--white-muted);
+    font-weight: 400;
+  }
+
+  .communication-table th {
+    font-size: 6.15pt;
+  }
+
+  .communication-table td {
+    font-size: 6.05pt;
+    line-height: 1.28;
+  }
+
+  .excerpt-hidden {
+    display: none;
+  }
+
+  .matrix-table th,
+  .matrix-table td {
+    padding: 0.66mm 0.54mm;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .matrix-table th {
+    font-size: 5.35pt;
+    line-height: 1.18;
+  }
+
+  .matrix-table th .role-name {
+    display: block;
+    margin-top: 0.2mm;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 4.3pt;
+    font-weight: 500;
+    color: var(--white-muted);
+    letter-spacing: 0.01em;
+    text-transform: none;
+  }
+
+  .matrix-table td {
+    font-size: 5.35pt;
+    line-height: 1.18;
+  }
+
+  .matrix-table td:first-child {
+    text-align: center;
+    color: var(--white-dim);
+    font-weight: 600;
+  }
+
+  .matrix-table td:not(:first-child) {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5.55pt;
+    font-weight: 600;
+    color: var(--white-dim);
+    letter-spacing: 0.04em;
+  }
+
+  .risk-table th,
+  .risk-table td {
+    padding: 0.25mm 0.24mm;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .risk-table th {
+    font-size: 5.1pt;
+    line-height: 1.02;
+  }
+
+  .risk-table th .role-name {
+    display: block;
+    margin-top: 0.06mm;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 4.02pt;
+    font-weight: 500;
+    color: var(--white-muted);
+    letter-spacing: 0.01em;
+    text-transform: none;
+    line-height: 1;
+  }
+
+  .risk-table td {
+    font-size: 4.88pt;
+    line-height: 1.02;
+  }
+
+  .risk-table td:first-child,
+  .risk-table td:nth-child(6),
+  .risk-table td:nth-child(7) {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  .risk-table td:first-child {
+    color: var(--white-dim);
+    font-weight: 600;
+  }
+
+  .risk-table td:nth-child(2),
+  .risk-table td:nth-child(3),
+  .risk-table td:nth-child(4),
+  .risk-table td:nth-child(5) {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5.18pt;
+    font-weight: 600;
+    color: var(--white-dim);
+    letter-spacing: 0.03em;
+  }
+
+  .risk-table td:nth-child(7) {
+    line-height: 1.02;
+  }
+
+  .risk-table-card {
+    --tactics-card-inset: 0.55mm;
+    padding: 0.55mm;
+  }
+
+  .risk-table-card .tactics-table-frame {
+    padding: 0.45mm;
+  }
+
+  .cashflow-table-card {
+    flex: 1 1 auto;
+    min-height: 50mm;
+    --tactics-card-inset: 0.55mm;
+    padding: 0.55mm;
+  }
+
+  .cashflow-table-card .tactics-table-frame {
+    padding: 0.42mm;
+  }
+
+  .cashflow-table th,
+  .cashflow-table td {
+    padding: 0.3mm 0.36mm;
+    vertical-align: middle;
+  }
+
+  .cashflow-table th {
+    font-size: 4.65pt;
+    line-height: 1.08;
+    text-align: center;
+  }
+
+  .cashflow-table td {
+    font-size: 4.35pt;
+    line-height: 1.08;
+    color: var(--white-muted);
+  }
+
+  .cashflow-table td:first-child {
+    color: var(--white-dim);
+    font-weight: 500;
+  }
+
+  .cashflow-table td.amount,
+  .cashflow-table td.total-amount {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4.45pt;
+    font-weight: 600;
+    color: var(--white-dim);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .cashflow-table td.amount {
+    text-align: right;
+  }
+
+  .cashflow-table td.total-amount {
+    text-align: center;
+  }
+
+  .cashflow-table td.date-cell {
+    padding-left: 0;
+    padding-right: 0;
+    vertical-align: middle;
+  }
+
+  .cashflow-chip-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .cashflow-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 8mm;
+    height: 2.3mm;
+    padding: 0 0.7mm;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.075);
+    border: 0.14mm solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+  }
+
+  .cashflow-chip-label {
+    display: block;
+    font-size: 3.9pt;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--white-dim);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .cashflow-chip.pending {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .cashflow-chip.pending .cashflow-chip-label {
+    color: var(--white-muted);
+  }
+
+  .cashflow-table tr.cashflow-section td {
+    padding: 0.48mm 0.55mm;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.014) 100%),
+      linear-gradient(180deg, rgba(20, 20, 26, 0.9) 0%, rgba(12, 12, 16, 0.95) 100%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4.4pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .cashflow-table tr.cashflow-total td {
+    padding-top: 0.48mm;
+    padding-bottom: 0.48mm;
+    background: rgba(255, 255, 255, 0.02);
+    border-top: 0.18mm solid rgba(229, 184, 11, 0.12);
+  }
+
+  .cashflow-table tr.cashflow-total td:first-child {
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  .cashflow-table tr.cashflow-total.inflow td.total-amount,
+  .cashflow-table tr.cashflow-total.outflow td.total-amount,
+  .cashflow-table tr.cashflow-net td.total-amount {
+    color: var(--gold);
+    text-align: center;
+  }
+
+  .cashflow-table tr.cashflow-net td {
+    padding-top: 0.56mm;
+    padding-bottom: 0.56mm;
+    background:
+      linear-gradient(180deg, rgba(58, 12, 163, 0.09) 0%, rgba(255, 255, 255, 0.012) 100%),
+      rgba(255, 255, 255, 0.018);
+    border-top: 0.2mm solid rgba(58, 12, 163, 0.18);
+  }
+
+  .cashflow-table tr.cashflow-net td:first-child {
+    font-weight: 700;
+  }
+
+  .diagram-media-card {
+    position: relative;
+    border-radius: 0.8mm;
+    overflow: hidden;
+  }
+
+  .diagram-media-surface {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.024) 0%, rgba(255, 255, 255, 0.008) 100%),
+      rgba(255, 255, 255, 0.02);
+    padding: 0.8mm;
+    overflow: hidden;
+  }
+
+  .diagram-media-card img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    border-radius: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.8mm;
+  }
+
+  .scope-contract-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 28mm;
+    gap: 1.15mm;
+    align-items: start;
+    margin-top: 0.15mm;
+  }
+
+  .scope-contract-copy {
+    margin: 0;
+  }
+
+  .scope-contract-media {
+    height: 38mm;
+  }
+
+  .scope-contract-media img {
+    box-sizing: border-box;
+    object-position: top center;
+  }
+
+  .sponsor-approach-layout {
+    margin-top: 0.2mm;
+  }
+
+  .sponsor-approach-flowchart {
+    height: 80mm;
+  }
+
+  .sponsor-approach-flowchart img {
+    object-position: top center;
+  }
+
+  .quality-flow-surface {
+    padding: 0.55mm 0.75mm;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.008) 100%),
+      linear-gradient(180deg, rgba(8, 8, 11, 0.97) 0%, rgba(14, 14, 18, 0.93) 100%);
+  }
+
+  .quality-flowchart {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .quality-flowchart text {
+    font-family: 'Montserrat', sans-serif;
+    dominant-baseline: middle;
+    text-anchor: middle;
+  }
+
+  .quality-flow-node-primary {
+    font-size: 4.8pt;
+    font-weight: 700;
+    fill: var(--white);
+  }
+
+  .quality-flow-node-secondary {
+    font-size: 4.05pt;
+    font-weight: 600;
+    fill: var(--white-dim);
+  }
+
+  .quality-flow-node-tertiary {
+    font-size: 3.45pt;
+    font-weight: 500;
+    fill: var(--white-muted);
+  }
+
+  .quality-flow-node-box {
+    fill: rgba(255, 255, 255, 0.03);
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 0.45;
+    rx: 4;
+  }
+
+  .quality-flow-node-box.primary {
+    fill: rgba(58, 12, 163, 0.18);
+    stroke: rgba(229, 184, 11, 0.18);
+  }
+
+  .quality-flow-node-box.secondary {
+    fill: rgba(255, 255, 255, 0.035);
+  }
+
+  .quality-flow-node-box.tertiary {
+    fill: rgba(255, 255, 255, 0.022);
+  }
+
+  .quality-flow-line {
+    fill: none;
+    stroke: rgba(229, 184, 11, 0.78);
+    stroke-width: 0.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .gantt-chart-card .tactics-table-frame {
+    padding: 0.8mm;
+  }
+
+  .raci-table-card {
+    height: 39mm;
+    margin-top: 0.7mm;
+  }
+
+  .quality-control-card {
+    padding-bottom: 1.8mm;
+  }
+
+  .quality-control-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 95mm;
+    gap: 1.1mm;
+    align-items: start;
+    margin-top: 0.2mm;
+  }
+
+  .quality-control-copy {
+    margin: 0;
+  }
+
+  .quality-control-media {
+    height: 39mm;
+    margin-top: 0;
+  }
+
+  .gantt-chart-excerpt-card {
+    height: 47mm;
+  }
+
+  .gantt-chart {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45mm;
+  }
+
+  .gantt-header,
+  .gantt-row {
+    display: grid;
+    grid-template-columns: 34mm minmax(0, 1fr);
+    gap: 0.75mm;
+    min-height: 0;
+  }
+
+  .gantt-header {
+    flex: 0 0 4.2mm;
+  }
+
+  .gantt-row {
+    flex: 1 1 0;
+  }
+
+  .gantt-task-head,
+  .gantt-task-name {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .gantt-task-head {
+    justify-content: center;
+    padding: 0 1.2mm;
+    border-radius: 0.8mm;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.024) 100%),
+      linear-gradient(180deg, rgba(8, 8, 11, 0.96) 0%, rgba(14, 14, 18, 0.92) 100%);
+    border: 0.18mm solid rgba(255, 255, 255, 0.09);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5.6pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .gantt-months {
+    display: grid;
+    grid-template-columns: repeat(18, minmax(0, 1fr));
+    gap: 0.35mm;
+  }
+
+  .gantt-month {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.65mm;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%),
+      linear-gradient(180deg, rgba(8, 8, 11, 0.96) 0%, rgba(14, 14, 18, 0.92) 100%);
+    border: 0.18mm solid rgba(255, 255, 255, 0.085);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5.05pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    grid-column: span 2;
+  }
+
+  .gantt-task-name {
+    justify-content: flex-end;
+    padding-right: 1.2mm;
+    text-align: right;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 5.4pt;
+    font-weight: 600;
+    color: var(--white-dim);
+    line-height: 1.14;
+  }
+
+  .gantt-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(18, minmax(0, 1fr));
+    gap: 0.35mm;
+    align-items: center;
+    min-height: 0;
+    padding: 0.18mm 0.35mm;
+    border-radius: 0.8mm;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.022) 0%, rgba(255, 255, 255, 0.008) 100%),
+      linear-gradient(180deg, rgba(8, 8, 11, 0.96) 0%, rgba(14, 14, 18, 0.92) 100%);
+    border: 0.16mm solid rgba(255, 255, 255, 0.06);
+  }
+
+  .gantt-track::before {
+    content: '';
+    position: absolute;
+    inset: 0.28mm;
+    border-radius: 0.55mm;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.008) 100%),
+      repeating-linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0.018) 0,
+        rgba(255, 255, 255, 0.018) calc(5.555% - 0.14mm),
+        rgba(255, 255, 255, 0) calc(5.555% - 0.14mm),
+        rgba(255, 255, 255, 0) 5.555%
+      );
+    z-index: 0;
+  }
+
+  .gantt-bar {
+    grid-row: 1;
+    grid-column: var(--start) / span var(--span);
+    position: relative;
+    align-self: center;
+    justify-self: stretch;
+    min-width: 0;
+    min-height: 4.2mm;
+    display: block;
+    padding: 0;
+    border-radius: 999px;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: inset 0 0.15mm 0.32mm rgba(255, 255, 255, 0.1), 0 0.3mm 0.95mm rgba(14, 8, 28, 0.28);
+  }
+
+  .gantt-bar-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(100% - 0.9mm);
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 5.4pt;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+  }
+
+  .gantt-bar.completed {
+    background: var(--purple-light);
+  }
+
+  .gantt-bar.in-progress {
+    background: var(--purple);
+  }
+
+  .tactics-table tbody tr:nth-child(odd) td {
+    background: rgba(255, 255, 255, 0.018);
+  }
+
+  .tactics-table tbody tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.008);
+  }
+
+  /* ===== PRINT BUTTON ===== */
+  .print-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--obsidian);
+    background: var(--gold);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    box-shadow: 0 2px 12px rgba(229, 184, 11, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .print-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(229, 184, 11, 0.45);
+  }
+
+  @media print {
+    .print-btn { display: none !important; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">PRINT / PDF</button>
+
+<div class="page">
+
+  <!-- ===== HEADER STRIP ===== -->
+  <header class="header">
+    <div class="header-left">Qualifinals Portfolio &middot; 2025-2026</div>
+    <div class="header-center">Project Management Plan</div>
+    <div class="header-right">
+      <img src="../TeamSuccessors/public/brand/logo.svg" alt="Successors Logo">
+      <span class="header-page-num">02</span>
+    </div>
+  </header>
+
+  <!-- ===== 3-COLUMN BODY ===== -->
+  <div class="body-grid">
+
+    <!-- ========== LEFT COLUMN — Scope, Resources, Communication ========== -->
+    <div class="col">
+
+      <!-- L1: PROJECT SCOPE STATEMENT -->
+      <div class="glass-card brackets">
+        <div class="section-title">Project Scope Statement</div>
+        <div class="scope-contract-layout">
+          <p class="body-text-sm scope-contract-copy">Initially, to give the team direction, we framed our project scope statement as a contract. It defines the project description, objectives, deliverables, and constraints while making role ownership explicit from the start. This gave every department a clear reference point when reviewing progress and helped keep decisions aligned across the team, with deliverables only considered complete once they had been signed off by the Heads of Department and our Mentor.</p>
+          <div class="diagram-media-card scope-contract-media">
+            <img src="./Project Management Plan Public/Project Scope Contract PNG.png" alt="Project Scope Contract">
+          </div>
+        </div>
+      </div>
+
+      <!-- L2: RESOURCE MANAGEMENT AND BUDGET -->
+      <div class="glass-card" style="display: flex; flex-direction: column;">
+        <div class="section-title">Resource Management &amp; Budget</div>
+        <p class="body-text-sm">We created a cash flow forecast to estimate engineering, enterprise, and team management outflows, while predicting when those costs would occur if sponsor funding was delayed. Following the prudence accounting concept kept the forecast realistic and prevented outflows from being understated while we approached sponsors. We also maintained a shared Microsoft Excel expense report logging each purchase, its value, date, category, and invoice or receipt for reimbursement.</p>
+        <div class="tactics-table-card cashflow-table-card" style="margin-top: 0.7mm;">
+          <div class="tactics-table-frame">
+            <table class="tactics-table cashflow-table" aria-label="Cash flow forecast">
+              <colgroup>
+                <col style="width: 35%;">
+                <col style="width: 14%;">
+                <col style="width: 19%;">
+                <col style="width: 17%;">
+                <col style="width: 15%;">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Forecast (AED)</th>
+                  <th>Expected Date</th>
+                  <th>Actual Date</th>
+                  <th>Total (AED)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="cashflow-section">
+                  <td colspan="5">Cash Inflows</td>
+                </tr>
+                <tr>
+                  <td>Indiana Delights FZCO</td>
+                  <td class="amount">5,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 13, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Spicebox Innovation L.L.C.-FZ</td>
+                  <td class="amount">5,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 13, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>VMAKE Events FZCO</td>
+                  <td class="amount">10,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 31, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 20, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="cashflow-total inflow">
+                  <td colspan="4">Total Inflows</td>
+                  <td class="total-amount">20,000.00</td>
+                </tr>
+
+                <tr class="cashflow-section">
+                  <td colspan="5">Engineering Outflows</td>
+                </tr>
+                <tr>
+                  <td>Lunyee 3018 Pro Ultra CNC</td>
+                  <td class="amount">3,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 20, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Model Blocks</td>
+                  <td class="amount">480.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 16, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Accessories Kit</td>
+                  <td class="amount">100.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 16, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>CNC Servicing</td>
+                  <td class="amount">736.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Mar 9, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>CNC Servicing</td>
+                  <td class="amount">1,472.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Apr 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>3D Printing Service</td>
+                  <td class="amount">180.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Apr 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>3D Printer Nozzles</td>
+                  <td class="amount">150.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 1, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 18, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>3D Printer Filament</td>
+                  <td class="amount">500.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 29, 2026</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>3D Printer Filament</td>
+                  <td class="amount">1,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Mar 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Final Car Painting</td>
+                  <td class="amount">500.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">May 7, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>JSS Testing Visits</td>
+                  <td class="amount">960.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Mar 16, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="cashflow-total outflow">
+                  <td colspan="4">Total Engineering Outflows</td>
+                  <td class="total-amount">(9,078.00)</td>
+                </tr>
+
+                <tr class="cashflow-section">
+                  <td colspan="5">Enterprise Outflows</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Business Cards</td>
+                  <td class="amount">150.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Dec 7, 2025</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Nov 21, 2025</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Canva Business</td>
+                  <td class="amount">400.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Dec 1, 2025</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Nov 13, 2025</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Uniforms</td>
+                  <td class="amount">1,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 7, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Pit Display</td>
+                  <td class="amount">3,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Apr 30, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Event Resources</td>
+                  <td class="amount">1,500.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 15, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Merchandise</td>
+                  <td class="amount">1,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Mar 30, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Social Media Advertising</td>
+                  <td class="amount">1,000.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Jan 1, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Website Domain</td>
+                  <td class="amount">50.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Feb 28, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="cashflow-total outflow">
+                  <td colspan="4">Total Enterprise Outflows</td>
+                  <td class="total-amount">(8,100.00)</td>
+                </tr>
+
+                <tr class="cashflow-section">
+                  <td colspan="5">Team Management Outflows</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Transportation</td>
+                  <td class="amount">0.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">Apr 1, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Portfolio Printing</td>
+                  <td class="amount">500.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip"><span class="cashflow-chip-label">May 14, 2026</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>Contingency Costs</td>
+                  <td class="amount">1,500.00</td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td class="date-cell"><div class="cashflow-chip-slot"><span class="cashflow-chip pending"><span class="cashflow-chip-label">Pending</span></span></div></td>
+                  <td></td>
+                </tr>
+                <tr class="cashflow-total outflow">
+                  <td colspan="4">Total Team Management Outflows</td>
+                  <td class="total-amount">(2,000.00)</td>
+                </tr>
+                <tr class="cashflow-net">
+                  <td colspan="4">Net Cash Flow</td>
+                  <td class="total-amount">822.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="fig-caption">An excerpt of the cash flow forecast, showing the confirmed inflows, key outflows, and final balance.</p>
+      </div>
+
+      <!-- L3: ENTERPRISE SOFTWARE -->
+      <div class="glass-card">
+        <div class="section-title">Enterprise Software</div>
+        <div class="enterprise-tools-grid">
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/Photoshop Logo.png" alt="Adobe Photoshop logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">Adobe Photoshop</div>
+              <p class="enterprise-tool-desc">Logo development, banners, backboards, jersey graphics, and post visuals.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/Premiere Pro Logo.png" alt="Adobe Premiere Pro logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">Adobe Premiere Pro</div>
+              <p class="enterprise-tool-desc">Editing Instagram reels and short video content.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/Illustrator Logo.png" alt="Adobe Illustrator logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">Adobe Illustrator</div>
+              <p class="enterprise-tool-desc">Vector jersey artwork and scalable graphic assets.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/Canva Logo.png" alt="Canva logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">Canva</div>
+              <p class="enterprise-tool-desc">Fast layout drafting and early graphic concepts.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/NextJS Logo.png" alt="Next.js logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">Next.js / React</div>
+              <p class="enterprise-tool-desc">Website development using Tailwind CSS and TypeScript.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/Remotion Logo.png" alt="Remotion logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">Remotion</div>
+              <p class="enterprise-tool-desc">Production of the coded website showcase reel.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/HTML Logo.png" alt="HTML logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">HTML / CSS / JS</div>
+              <p class="enterprise-tool-desc">Project scope contract and Qualifinals portfolio pages.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/Trello Logo.png" alt="Trello logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">Trello</div>
+              <p class="enterprise-tool-desc">Task tracking, delivery ownership, and deadline management.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/WhatsApp Logo.png" alt="WhatsApp logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">WhatsApp</div>
+              <p class="enterprise-tool-desc">Daily team communication and quick updates.</p>
+            </div>
+          </div>
+          <div class="enterprise-tool">
+            <div class="enterprise-tool-icon"><img src="./Project Management Plan Public/Google Drive Logo.png" alt="Google Drive logo"></div>
+            <div class="enterprise-tool-info">
+              <div class="enterprise-tool-name">Google Drive</div>
+              <p class="enterprise-tool-desc">Shared storage, file handover, and version access.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- L4: COMMUNICATION -->
+      <div class="glass-card" style="display: flex; flex-direction: column;">
+        <div class="section-title">Communication</div>
+        <p class="body-text-sm">We developed a communication framework to keep internal coordination and external stakeholder updates clear throughout the competition.</p>
+        <div class="tactics-table-card" style="height: 35mm; margin-top: 0.7mm;">
+          <div class="tactics-table-frame">
+            <table class="tactics-table communication-table" aria-label="Internal and external communication">
+              <thead>
+                <tr>
+                  <th>Internal Communication</th>
+                  <th>External Communication</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Internally, we used a structured communication system to keep every team member closely aligned on objectives, timelines, and individual responsibilities. Weekly meetings were used to review progress, set short-term targets, strengthen accountability through task management tools, and raise blockers early before they affected wider progress across the whole team.</td>
+                  <td>Externally, we built direct communication channels with stakeholders while removing unnecessary layers. A website accessible to sponsors and mentors provided updated financial information, clear goals, blockers, action items, and an outline of the team's timeline, making progress and support requirements easier to communicate clearly and consistently.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== CENTER COLUMN — Roles, Gantt, Risk ========== -->
+    <div class="col">
+
+      <!-- C1: ROLES AND RESPONSIBILITIES -->
+      <div class="glass-card brackets">
+        <div class="section-title">Roles &amp; Responsibilities</div>
+        <p class="body-text-sm">Clear role allocation was essential to building a competitive STEM Racing team, so we used a RACI matrix to define each member's contribution across key deliverables. It strengthened accountability, ensured each deliverable was covered, and made responsibilities easy to assign and review.</p>
+        <div class="tactics-table-card raci-table-card">
+          <div class="tactics-table-frame">
+            <table class="tactics-table matrix-table" aria-label="RACI chart">
+              <thead>
+                <tr>
+                  <th>Deliverable</th>
+                  <th>Team Principal<span class="role-name">(Yahya)</span></th>
+                  <th>Head of Enterprise<span class="role-name">(Adam)</span></th>
+                  <th>Graphic Designer<span class="role-name">(Vihaann)</span></th>
+                  <th>Head of Engineering<span class="role-name">(Sajjad)</span></th>
+                  <th>Analytical Engineer<span class="role-name">(Ahmed)</span></th>
+                  <th>Design Engineer<span class="role-name">(Piyush)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Enterprise Portfolio</td>
+                  <td>R</td>
+                  <td>R</td>
+                  <td>A</td>
+                  <td>I</td>
+                  <td>I</td>
+                  <td>I</td>
+                </tr>
+                <tr>
+                  <td>Sponsorships &amp; Partnerships</td>
+                  <td>R</td>
+                  <td>R</td>
+                  <td>I</td>
+                  <td>C</td>
+                  <td>C</td>
+                  <td>C</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>National Media Outreach</td>
+                  <td>R</td>
+                  <td>R</td>
+                  <td>C</td>
+                  <td>C</td>
+                  <td>I</td>
+                  <td>I</td>
+                </tr>
+                <tr>
+                  <td>Social Media Marketing</td>
+                  <td>C</td>
+                  <td>R</td>
+                  <td>A</td>
+                  <td>I</td>
+                  <td>I</td>
+                  <td>I</td>
+                </tr>
+                <tr>
+                  <td>Team Identity</td>
+                  <td>A</td>
+                  <td>A</td>
+                  <td>R</td>
+                  <td>C</td>
+                  <td>C</td>
+                  <td>C</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Events</td>
+                  <td>A</td>
+                  <td>R</td>
+                  <td>C</td>
+                  <td>I</td>
+                  <td>I</td>
+                  <td>I</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Team Briefing &amp; Orientation</td>
+                  <td>R</td>
+                  <td>C</td>
+                  <td>I</td>
+                  <td>C</td>
+                  <td>I</td>
+                  <td>I</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Finance</td>
+                  <td>A</td>
+                  <td>R</td>
+                  <td>I</td>
+                  <td>C</td>
+                  <td>I</td>
+                  <td>C</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Internal &amp; External Communication</td>
+                  <td>R</td>
+                  <td>R</td>
+                  <td>I</td>
+                  <td>I</td>
+                  <td>I</td>
+                  <td>I</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Pit Display</td>
+                  <td>A</td>
+                  <td>C</td>
+                  <td>R</td>
+                  <td>C</td>
+                  <td>I</td>
+                  <td>R</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="fig-caption">An excerpt of the RACI chart, showing the main deliverables and role ownership.</p>
+        <div class="raci-grid">
+          <div class="raci-pill">
+            <span class="raci-letter">R</span>
+            <span class="raci-label">Responsible</span>
+            <span class="raci-desc">The person or people directly delivering the task.</span>
+          </div>
+          <div class="raci-pill">
+            <span class="raci-letter">A</span>
+            <span class="raci-label">Accountable</span>
+            <span class="raci-desc">The individual ultimately answerable for its completion.</span>
+          </div>
+          <div class="raci-pill">
+            <span class="raci-letter">C</span>
+            <span class="raci-label">Consulted</span>
+            <span class="raci-desc">People whose input or expertise is needed during the task.</span>
+          </div>
+          <div class="raci-pill">
+            <span class="raci-letter">I</span>
+            <span class="raci-label">Informed</span>
+            <span class="raci-desc">Individuals kept updated on progress or outcomes.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- C2: QUALITY CONTROL -->
+      <div class="glass-card quality-control-card" style="display: flex; flex-direction: column;">
+        <div class="section-title">Quality Control</div>
+        <div class="quality-control-layout">
+          <p class="body-text-sm quality-control-copy">Our quality control system used separate departmental chains of command to maintain the standard of every output while allowing work to progress without unrelated interference. Each deliverable was reviewed within the department best placed to assess its quality before moving upward for approval, creating a clear route for feedback and revision. This kept accountability visible, reduced unnecessary overlap, and helped us resolve issues early rather than later in the project.</p>
+          <div class="diagram-media-card quality-control-media">
+            <img src="./Project Management Plan Public/Quality Control Flowchart PNG.png" alt="Quality Control Flowchart">
+          </div>
+        </div>
+      </div>
+
+      <!-- C3: GANTT CHART -->
+      <div class="glass-card">
+        <div class="section-title">Gantt Chart</div>
+        <div class="section-subtitle">Project Timeline</div>
+        <div class="tactics-table-card gantt-chart-card gantt-chart-excerpt-card">
+          <div class="tactics-table-frame">
+            <div class="gantt-chart" aria-label="Project Gantt chart">
+              <div class="gantt-header">
+                <div class="gantt-task-head">Task List</div>
+                <div class="gantt-months">
+                  <div class="gantt-month">Nov</div>
+                  <div class="gantt-month">Dec</div>
+                  <div class="gantt-month">Jan</div>
+                  <div class="gantt-month">Feb</div>
+                  <div class="gantt-month">Mar</div>
+                  <div class="gantt-month">Apr</div>
+                  <div class="gantt-month">May</div>
+                  <div class="gantt-month">Jun</div>
+                  <div class="gantt-month">Jul</div>
+                </div>
+              </div>
+
+              <div class="gantt-row">
+                <div class="gantt-task-name">Team Selection</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar completed" style="--start: 1; --span: 2;"><span class="gantt-bar-label">Completed</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row">
+                <div class="gantt-task-name">Team Structure &amp; Identity</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar completed" style="--start: 2; --span: 2;"><span class="gantt-bar-label">Completed</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row">
+                <div class="gantt-task-name">RACI &amp; Financial Forecast</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar completed" style="--start: 2; --span: 2;"><span class="gantt-bar-label">Completed</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row">
+                <div class="gantt-task-name">Sponsor Outreach &amp; Finalisation</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar completed" style="--start: 3; --span: 4;"><span class="gantt-bar-label">Completed</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row">
+                <div class="gantt-task-name">Sponsor Deliverables</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar in-progress" style="--start: 6; --span: 9;"><span class="gantt-bar-label">In progress</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row">
+                <div class="gantt-task-name">Merchandise &amp; Giveaways</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar in-progress" style="--start: 6; --span: 8;"><span class="gantt-bar-label">In progress</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row excerpt-hidden" style="display: none;" aria-hidden="true">
+                <div class="gantt-task-name">Pit Display Design</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar completed" style="--start: 9; --span: 2;"><span class="gantt-bar-label">Completed</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row excerpt-hidden" style="display: none;" aria-hidden="true">
+                <div class="gantt-task-name">Qualifinals Submission</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar completed" style="--start: 9; --span: 3;"><span class="gantt-bar-label">Completed</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row excerpt-hidden" style="display: none;" aria-hidden="true">
+                <div class="gantt-task-name">National Marketing &amp; Outreach</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar in-progress" style="--start: 8; --span: 7;"><span class="gantt-bar-label">In progress</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row excerpt-hidden" style="display: none;" aria-hidden="true">
+                <div class="gantt-task-name">Pit Display Assembly</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar in-progress" style="--start: 13; --span: 2;"><span class="gantt-bar-label">In progress</span></div>
+                </div>
+              </div>
+
+              <div class="gantt-row excerpt-hidden" style="display: none;" aria-hidden="true">
+                <div class="gantt-task-name">Team Enterprise Final Portfolio</div>
+                <div class="gantt-track">
+                  <div class="gantt-bar in-progress" style="--start: 13; --span: 2;"><span class="gantt-bar-label">In progress</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="fig-caption">An excerpt of the Gantt chart, showing the main milestones and active workstreams.</p>
+        <p class="body-text-sm" style="margin-top: 0.7mm;">The Gantt chart helped us map the team's timeline, identify deadlines, and spot overlaps early. It also let us track progress against competition milestones and correct delays before they affected the wider project.</p>
+      </div>
+
+      <!-- C4: RISK MATRIX -->
+      <div class="glass-card" style="display: flex; flex-direction: column;">
+        <div class="section-title">Risk Matrix</div>
+        <div class="tactics-table-card risk-table-card" style="height: 43mm; margin-top: 0.2mm;">
+          <div class="tactics-table-frame">
+            <table class="tactics-table risk-table" aria-label="Risk matrix">
+              <colgroup>
+                <col style="width: 10.5%;">
+                <col style="width: 9.7%;">
+                <col style="width: 9.7%;">
+                <col style="width: 9.7%;">
+                <col style="width: 9.7%;">
+                <col style="width: 12.2%;">
+                <col style="width: 38.5%;">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Risk</th>
+                  <th>Severity<span class="role-name">(1-10)</span></th>
+                  <th>Occurrence<span class="role-name">(1-10)</span></th>
+                  <th>Detection<span class="role-name">(1-10)</span></th>
+                  <th>RPN Score<span class="role-name">(1-1000)</span></th>
+                  <th>Responsible<br>Stakeholder</th>
+                  <th>Mitigation Strategy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="excerpt-hidden">
+                  <td>Exam Scheduling Conflicts</td>
+                  <td>3</td>
+                  <td>10</td>
+                  <td>1</td>
+                  <td>30</td>
+                  <td>Team Members</td>
+                  <td>Set internal deadlines and maintain consistent internal communication.</td>
+                </tr>
+                <tr>
+                  <td>Loss of a Team Member</td>
+                  <td>10</td>
+                  <td>3</td>
+                  <td>10</td>
+                  <td>300</td>
+                  <td>Team Members</td>
+                  <td>Establish from the outset that this is a long-term commitment, and assign backup roles for short-notice personal emergencies.</td>
+                </tr>
+                <tr>
+                  <td>Delivery Delays</td>
+                  <td>5</td>
+                  <td>8</td>
+                  <td>7</td>
+                  <td>280</td>
+                  <td>Suppliers</td>
+                  <td>Maintain backup suppliers for major purchases and keep a buffer on orders.</td>
+                </tr>
+                <tr>
+                  <td>Insufficient Funds</td>
+                  <td>9</td>
+                  <td>6</td>
+                  <td>4</td>
+                  <td>216</td>
+                  <td>Sponsor</td>
+                  <td>Attend networking events, account for contingency costs, and maintain a cashflow forecast.</td>
+                </tr>
+                <tr>
+                  <td>Sponsor Contract Revocation</td>
+                  <td>8</td>
+                  <td>2</td>
+                  <td>8</td>
+                  <td>128</td>
+                  <td>Sponsor</td>
+                  <td>Ensure contract terms are understood and upheld, and maintain transparency throughout the journey.</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Missed Submission Deadlines</td>
+                  <td>10</td>
+                  <td>2</td>
+                  <td>2</td>
+                  <td>40</td>
+                  <td>Team Members</td>
+                  <td>Set internal deadline buffers in case external factors hinder operations.</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Mentor Availability</td>
+                  <td>6</td>
+                  <td>7</td>
+                  <td>4</td>
+                  <td>126</td>
+                  <td>Mentor</td>
+                  <td>Set fixed meeting times in advance.</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Approval Delays</td>
+                  <td>8</td>
+                  <td>6</td>
+                  <td>6</td>
+                  <td>288</td>
+                  <td>School and KHDA</td>
+                  <td>Propose ideas early so approvals can begin in time.</td>
+                </tr>
+                <tr class="excerpt-hidden">
+                  <td>Political Instability / Global Crisis</td>
+                  <td>10</td>
+                  <td>4</td>
+                  <td>7</td>
+                  <td>280</td>
+                  <td>Government</td>
+                  <td>Maintain a remote contingency plan for operations.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="fig-caption">An excerpt of the risk matrix, showing the highest-priority risks and their mitigation strategies.</p>
+        <p class="body-text-sm" style="margin-top: 0.7mm;">To reduce risks that could disrupt progress, we developed a matrix that considers severity, occurrence, and detection rather than relying on a simple two-dimensional model. This gave a more realistic view of each risk and helped us define a clear mitigation strategy in advance.</p>
+      </div>
+
+    </div>
+
+    <!-- ========== RIGHT COLUMN — Sponsor & Marketing ========== -->
+    <div class="col">
+
+      <!-- R1: SPONSOR APPROACH -->
+      <div class="glass-card">
+        <div class="section-title">Sponsor Approach</div>
+        <div class="sponsor-approach-layout">
+          <div class="diagram-media-card sponsor-approach-flowchart">
+            <img src="./Project Management Plan Public/Sponsor Approach Flowchart PNG.png" alt="Sponsor Approach Flowchart">
+          </div>
+        </div>
+      </div>
+
+      <!-- R2: MARKETING STRATEGY -->
+      <div class="glass-card brackets" style="flex: 1; display: flex; flex-direction: column;">
+        <div class="section-title">Marketing Strategy</div>
+        <p class="body-text-sm" style="margin-bottom: 0.5mm;">To maximise exposure, we adopted a three-step marketing strategy:</p>
+
+        <div class="strategy-steps">
+          <!-- Step 1: SWOT -->
+          <div class="strategy-step">
+            <div class="step-num">Step 1</div>
+            <div class="step-title">Situational Analysis (SWOT)</div>
+            <div class="swot-grid">
+              <div class="swot-block">
+                <div class="swot-label">Strengths</div>
+                <ul class="swot-list">
+                  <li>Highly capable team members with a clear commitment to excellence.</li>
+                  <li>A distinct team identity shaped by our pace, position, and direction.</li>
+                  <li>Strong mentorship and the foundation of a national team that placed 6th.</li>
+                </ul>
+              </div>
+              <div class="swot-block">
+                <div class="swot-label">Weaknesses</div>
+                <ul class="swot-list">
+                  <li>A heavy academic workload during May and June, overlapping with competition dates.</li>
+                  <li>Limited direct return for those less involved, such as students and parents.</li>
+                  <li>No dedicated GFS facilities for car testing.</li>
+                </ul>
+              </div>
+              <div class="swot-block">
+                <div class="swot-label">Opportunities</div>
+                <ul class="swot-list">
+                  <li>Access to 6,000+ students and 500+ staff at GFS.</li>
+                  <li>Access to 100k+ LinkedIn followers and 20k+ Instagram followers.</li>
+                  <li>Access to our sponsors' resources, expertise, and wider professional networks.</li>
+                </ul>
+              </div>
+              <div class="swot-block">
+                <div class="swot-label">Threats</div>
+                <ul class="swot-list">
+                  <li>A highly competitive STEM competition, with 80+ teams in the most recent national finals.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="strategy-step">
+            <div class="step-num">Step 2</div>
+            <div class="step-title">Customer Segmentation &amp; Targeting</div>
+            <div class="diagram-media-card" style="height: 32mm; margin-top: 0.3mm;">
+              <img src="./Project Management Plan Public/Marketing Strategy Mindmap PNG.png" alt="Marketing Strategy Mindmap">
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="strategy-step" style="flex: 1; display: flex; flex-direction: column;">
+            <div class="step-num">Step 3</div>
+            <div class="step-title">Marketing Objectives &amp; Tactics</div>
+            <div class="tactics-table-card" style="flex: 1; min-height: 32mm; margin-top: 0.3mm;">
+              <div class="tactics-table-frame">
+                <table class="tactics-table" aria-label="Marketing objectives and tactics">
+                  <thead>
+                    <tr>
+                      <th>Demographic</th>
+                      <th>Objective</th>
+                      <th>Marketing Tactic</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Students and Parents</td>
+                      <td>Sustain support and broaden reach.</td>
+                      <td>Instagram, events, giveaways.</td>
+                    </tr>
+                    <tr>
+                      <td>Sponsors</td>
+                      <td>Engage communities and maximise ROI.</td>
+                      <td>LinkedIn, website, showcases.</td>
+                    </tr>
+                    <tr>
+                      <td>Judges</td>
+                      <td>Meet regulations and maintain a high standard.</td>
+                      <td>Website, portfolios.</td>
+                    </tr>
+                    <tr>
+                      <td>Local Newspapers and Radio Stations</td>
+                      <td>Differentiate the team and improve coverage potential.</td>
+                      <td>Communicate engineering excellence clearly.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /body-grid -->
+
+</div><!-- /page -->
+
+</body>
+</html>

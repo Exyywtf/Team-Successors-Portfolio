@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Successors — Team Identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --purple: #3A0CA3;
+    --purple-light: #5A2ED6;
+    --purple-glow: rgba(58, 12, 163, 0.30);
+    --why-purple-red: #B0161D;
+    --why-purple-blue: #0032A0;
+    --gold: #E5B80B;
+    --gold-dim: rgba(229, 184, 11, 0.5);
+    --gold-glow: rgba(229, 184, 11, 0.12);
+    --light-leak-opacity: 0.50;
+    --obsidian: #050505;
+    --obsidian-card: rgba(255, 255, 255, 0.04);
+    --obsidian-border: rgba(255, 255, 255, 0.08);
+    --white: #FFFFFF;
+    --white-dim: rgba(255, 255, 255, 0.65);
+    --white-muted: rgba(255, 255, 255, 0.45);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+  }
+
+  @page {
+    size: 420mm 297mm;
+    margin: 0;
+  }
+
+  html, body {
+    width: 420mm;
+    height: 297mm;
+    overflow: hidden;
+    background: var(--obsidian);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  body {
+    position: relative;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Purple light leak — bottom-left (matching website) */
+  body::after {
+    content: '';
+    position: absolute;
+    bottom: -80mm;
+    left: -60mm;
+    width: 280mm;
+    height: 220mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(58, 12, 163, calc(0.30 * var(--light-leak-opacity))) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Gold light leak — top-right */
+  .page::before {
+    content: '';
+    position: absolute;
+    top: -70mm;
+    right: -50mm;
+    width: 240mm;
+    height: 200mm;
+    background: radial-gradient(
+      ellipse,
+      rgba(229, 184, 11, calc(0.08 * var(--light-leak-opacity))) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== PAGE SHELL ===== */
+  .page {
+    position: relative;
+    z-index: 2;
+    width: 420mm;
+    height: 297mm;
+    display: flex;
+    flex-direction: column;
+    padding: 3.6mm 5.5mm;
+  }
+
+  /* ===== HEADER STRIP ===== */
+  .header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: end;
+    height: 9mm;
+    padding: 0 3mm;
+    border-bottom: 0.3mm solid var(--obsidian-border);
+    margin-bottom: 1.6mm;
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    min-width: 0;
+    align-self: end;
+    line-height: 1;
+    transform: translateY(-1.75mm);
+  }
+
+  .header-center {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24pt;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    justify-self: center;
+    align-self: end;
+    text-align: center;
+    line-height: 1;
+    transform: translateY(-1mm);
+  }
+
+  .header-right {
+    display: flex;
+    align-items: flex-end;
+    gap: 3mm;
+    justify-self: end;
+    align-self: end;
+    transform: translateY(-1.2mm);
+  }
+
+  .header-right img {
+    height: 9mm;
+    width: auto;
+    object-fit: contain;
+    transform: translateY(0);
+  }
+
+  .header-page-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16pt;
+    font-weight: 700;
+    color: var(--gold-dim);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  /* ===== 3-COLUMN BODY ===== */
+  .body-grid {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 25fr) minmax(0, 44fr) minmax(0, 31fr);
+    gap: 2.6mm;
+    min-height: 0;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.7mm;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  /* ===== GLASS CARD ===== */
+  .glass-card {
+    position: relative;
+    background: var(--obsidian-card);
+    border: 0.3mm solid var(--obsidian-border);
+    border-radius: 1.5mm;
+    padding: 2mm 2.6mm;
+    backdrop-filter: blur(2px);
+    overflow: hidden;
+  }
+
+  /* Tech bracket corners */
+  .glass-card.brackets::before,
+  .glass-card.brackets::after {
+    content: '';
+    position: absolute;
+    width: 4mm;
+    height: 4mm;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .glass-card.brackets::before {
+    top: 1mm;
+    left: 1mm;
+    border-width: 0.3mm 0 0 0.3mm;
+  }
+  .glass-card.brackets::after {
+    bottom: 1mm;
+    right: 1mm;
+    border-width: 0 0.3mm 0.3mm 0;
+  }
+
+  /* Gold glow variant — subtler */
+  .glass-card.gold-glow {
+    border-color: rgba(229, 184, 11, 0.12);
+    box-shadow: 0 0 8mm rgba(229, 184, 11, 0.08), inset 0 0 6mm rgba(229, 184, 11, 0.02);
+  }
+
+  /* ===== TYPOGRAPHY TOKENS ===== */
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11.5pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    margin-bottom: 0.95mm;
+  }
+
+  .section-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    font-style: italic;
+    margin-bottom: 0.9mm;
+  }
+
+  .heading-lg {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20pt;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.95mm;
+  }
+
+  .body-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10pt;
+    font-weight: 400;
+    color: var(--white-dim);
+    line-height: 1.42;
+  }
+
+  .eval-caption {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 8.5pt;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--gold-dim);
+    line-height: 1.4;
+    margin-top: 0.8mm;
+    padding-top: 0.7mm;
+    border-top: 0.2mm solid rgba(229, 184, 11, 0.1);
+  }
+
+  .eval-caption::before {
+    content: '\27D0\0020';
+    font-style: normal;
+  }
+
+  /* ===== LEFT COLUMN ===== */
+
+  .name-block .heading-lg {
+    position: relative;
+    display: inline-block;
+    color: var(--white);
+  }
+
+  .name-block .heading-lg::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    color: transparent;
+    background: linear-gradient(
+      90deg,
+      rgba(58, 12, 163, 0.18) 0%,
+      rgba(58, 12, 163, 0.18) 30%,
+      rgba(85, 43, 175, 0.17) 40%,
+      rgba(121, 76, 140, 0.16) 50%,
+      rgba(172, 130, 77, 0.17) 60%,
+      rgba(229, 184, 11, 0.18) 70%,
+      rgba(229, 184, 11, 0.18) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .name-block .body-text {
+    font-size: 8.5pt;
+    line-height: 1.38;
+  }
+
+  .tagline {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10pt;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+    margin-bottom: 0.8mm;
+  }
+
+  .tagline-explain {
+    font-size: 8.5pt;
+    color: var(--white-dim);
+    line-height: 1.38;
+    margin-bottom: 0.9mm;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1mm;
+    margin-bottom: 0.9mm;
+  }
+
+  .value-pill {
+    display: flex;
+    flex-direction: column;
+    padding: 1.2mm 1.4mm;
+    background: rgba(58, 12, 163, 0.12);
+    border: 0.2mm solid rgba(58, 12, 163, 0.2);
+    border-radius: 0.8mm;
+  }
+
+  .value-pill strong {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8.25pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.07em;
+    margin-bottom: 0.3mm;
+  }
+
+  .value-pill span {
+    font-size: 7.25pt;
+    color: var(--white-muted);
+    line-height: 1.34;
+  }
+
+  .school-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 600;
+    color: var(--white-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .who-we-are-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .team-people-grid {
+    flex: 0 0 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    align-content: start;
+    gap: 1mm;
+  }
+
+  .team-person-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 0.95mm 0.95mm 0 0.95mm;
+    background: linear-gradient(180deg, rgba(58, 12, 163, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 0.2mm solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.9mm;
+    overflow: hidden;
+  }
+
+  .team-person-media {
+    position: relative;
+    flex: 1 1 19.5mm;
+    min-height: 19.5mm;
+    border-radius: 0.8mm;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top right, rgba(229, 184, 11, 0.12), transparent 48%),
+      linear-gradient(180deg, rgba(58, 12, 163, 0.12) 0%, rgba(5, 5, 5, 0.02) 100%),
+      url("../TeamSuccessors/public/textures/media-wrapper-gallery-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .team-person-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(5, 5, 5, 0) 62%, rgba(5, 5, 5, 0.15) 84%, rgba(5, 5, 5, 0.28) 100%);
+    pointer-events: none;
+  }
+
+  .team-person-media img {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    filter: drop-shadow(0 1.6mm 2.8mm rgba(0, 0, 0, 0.28));
+  }
+
+  .team-person-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    padding-top: 1.2mm;
+    padding-bottom: 1.2mm;
+  }
+
+  .team-person-role {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    padding: 0.48mm 1.15mm;
+    margin-bottom: 0.42mm;
+    border-radius: 999px;
+    border: 0.2mm solid rgba(229, 184, 11, 0.18);
+    background: rgba(229, 184, 11, 0.08);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5.6pt;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .team-person-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.25pt;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.18;
+  }
+
+  /* Final Brand Mark */
+  .brand-mark-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.9mm 2.2mm 2.3mm;
+  }
+
+  .brand-mark-area img {
+    height: 23mm;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 1mm;
+    filter: drop-shadow(0 0 4mm rgba(229, 184, 11, 0.10));
+  }
+
+  .brand-mark-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    margin-bottom: 0.7mm;
+  }
+
+  .brand-mark-copy {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .brand-mark-body {
+    font-size: 8.5pt;
+    color: var(--white-dim);
+    line-height: 1.38;
+    text-align: left;
+  }
+
+  .brand-mark-area .eval-caption {
+    margin-top: auto;
+    width: 100%;
+    text-align: left;
+  }
+
+  /* ===== CENTER COLUMN ===== */
+
+  /* Logo Development — text-based stages */
+  .logo-dev-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .logo-stages {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5mm;
+    margin-top: 0.6mm;
+  }
+
+  .logo-stage {
+    display: flex;
+    flex-direction: column;
+    padding: 1.2mm 1.5mm 1.3mm;
+    background: rgba(58, 12, 163, 0.05);
+    border: 0.2mm solid rgba(58, 12, 163, 0.10);
+    border-radius: 0.8mm;
+  }
+
+  .logo-stage-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25mm;
+  }
+
+  .logo-stage-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.45mm;
+  }
+
+  .logo-stage-media {
+    height: 18.5mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.7mm;
+  }
+
+  .logo-stage-text {
+    font-size: 7.75pt;
+    color: var(--white-muted);
+    line-height: 1.38;
+  }
+
+  /* Stage placeholder visual */
+  .stage-placeholder {
+    width: 100%;
+    height: 18.5mm;
+    border: 0.3mm dashed rgba(229, 184, 11, 0.20);
+    border-radius: 0.8mm;
+    background: linear-gradient(135deg, rgba(58, 12, 163, 0.06) 0%, rgba(229, 184, 11, 0.03) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stage-placeholder-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.25pt;
+    font-weight: 500;
+    color: var(--white-muted);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .stage-image {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    border-radius: 0.6mm;
+    border: 0.2mm solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Crown construction image */
+  .crown-construction {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.6mm 2.6mm;
+  }
+
+  .crown-brand-combo {
+    align-items: stretch;
+  }
+
+  .crown-brand-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .crown-brand-block .brand-mark-copy {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .crown-brand-block .brand-mark-body,
+  .crown-brand-block .eval-caption {
+    text-align: left;
+    width: 100%;
+  }
+
+  .crown-construction img {
+    width: 54mm;
+    height: auto;
+    object-fit: contain;
+    border-radius: 1mm;
+  }
+
+  .crown-construction-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 600;
+    color: var(--gold-dim);
+    letter-spacing: 0.12em;
+    margin-top: 0.7mm;
+    text-transform: uppercase;
+  }
+
+  /* Design Rationale */
+  .rationale-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.3mm;
+    margin-top: 0.6mm;
+  }
+
+  .rationale-item {
+    padding: 1.2mm 1.5mm;
+    background: rgba(58, 12, 163, 0.06);
+    border: 0.2mm solid rgba(58, 12, 163, 0.12);
+    border-radius: 0.8mm;
+  }
+
+  .rationale-item strong {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.3mm;
+  }
+
+  .rationale-item span {
+    font-size: 7pt;
+    color: var(--white-muted);
+    line-height: 1.35;
+  }
+
+  .motifs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9mm 1.3mm;
+    margin-top: 0.6mm;
+    align-content: start;
+  }
+
+  .motif-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3mm;
+  }
+
+  .motif-item:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .motif-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2mm;
+  }
+
+  .motif-dot {
+    width: 1mm;
+    height: 1mm;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .motif-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.75pt;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.06em;
+  }
+
+  .motif-desc {
+    font-size: 7.25pt;
+    color: var(--white-muted);
+    line-height: 1.34;
+    padding-left: 2.1mm;
+    margin-top: 0.15mm;
+  }
+
+  /* ===== RIGHT COLUMN ===== */
+
+  /* Color System */
+  .color-swatches {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95mm;
+    margin-top: 0.6mm;
+  }
+
+  .swatch-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.9mm;
+  }
+
+  .swatch-block {
+    width: 6.2mm;
+    height: 6.2mm;
+    border-radius: 0.8mm;
+    flex-shrink: 0;
+    border: 0.2mm solid rgba(255, 255, 255, 0.1);
+    margin-top: 0.35mm;
+  }
+
+  .swatch-info {
+    flex: 1;
+  }
+
+  .swatch-hex {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7.25pt;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+
+  .swatch-name {
+    font-size: 7.75pt;
+    font-weight: 600;
+    color: var(--white-dim);
+    margin-bottom: 0.2mm;
+  }
+
+  .swatch-rationale {
+    font-size: 7.25pt;
+    color: var(--white-muted);
+    line-height: 1.33;
+  }
+
+  /* Typography */
+  .type-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95mm;
+    margin-top: 0.6mm;
+  }
+
+  .type-entry {
+    padding: 1.15mm 1.4mm;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+  }
+
+  .type-entry-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1mm;
+    margin-bottom: 0.3mm;
+  }
+
+  .type-entry-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8.25pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+
+  .type-entry-name.sample-montserrat {
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0;
+  }
+
+  .type-entry-name-render-wrap {
+    display: flex;
+    align-items: center;
+    min-height: 3.3mm;
+    min-width: 0;
+  }
+
+  .type-entry-name-render {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    flex-shrink: 1;
+    filter: brightness(0) invert(1);
+  }
+
+  .type-entry-name-render-midnight {
+    height: 2.45mm;
+  }
+
+  .type-entry-name-render-hooptie {
+    height: 2.9mm;
+  }
+
+  .type-entry-role {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.75pt;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .type-entry-desc {
+    font-size: 7.75pt;
+    color: var(--white-muted);
+    line-height: 1.33;
+  }
+
+  /* Identity in Application */
+  .identity-app-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .why-purple-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .why-purple-diagram {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: start;
+    gap: 0.8mm;
+    margin-top: 1mm;
+  }
+
+  .why-purple-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7mm;
+    min-width: 0;
+  }
+
+  .why-purple-swatch {
+    width: 100%;
+    max-width: 18mm;
+    aspect-ratio: 1 / 1;
+    border-radius: 0.8mm;
+    border: 0.2mm solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 0 0.2mm rgba(255, 255, 255, 0.02);
+  }
+
+  .why-purple-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.75pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .why-purple-hex {
+    font-size: 6.6pt;
+    font-weight: 600;
+    color: var(--white-muted);
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+
+  .why-purple-operator {
+    align-self: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22pt;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+    transform: translateY(-3.15mm);
+  }
+
+  .app-intro {
+    font-size: 8.5pt;
+    color: var(--white-dim);
+    line-height: 1.38;
+    margin-bottom: 0.9mm;
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6mm;
+    margin-bottom: 0.9mm;
+  }
+
+  .logo-stage-media {
+    position: relative;
+    border-radius: 0.8mm;
+    overflow: hidden;
+    padding: 0.32mm;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.018) 100%),
+      linear-gradient(135deg, rgba(58, 12, 163, 0.07) 0%, rgba(229, 184, 11, 0.03) 100%);
+    border: 0.25mm solid rgba(255, 255, 255, 0.08);
+  }
+
+  .app-item,
+  .jersey-item {
+    position: relative;
+    border-radius: 0.8mm;
+    overflow: hidden;
+  }
+
+  .website-img-main {
+    position: relative;
+    border-radius: 0.8mm;
+    overflow: hidden;
+  }
+
+  .app-item img,
+  .stage-image {
+    width: 100%;
+    display: block;
+    border-radius: 0.6mm;
+    border: 0;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .jersey-item img {
+    width: 100%;
+    display: block;
+    border-radius: 0.6mm;
+    background: rgba(255,255,255,0.02);
+    border: 0.2mm solid var(--obsidian-border);
+  }
+
+  .app-item img,
+  .website-img-main img {
+    object-fit: cover;
+    border: 0.2mm solid var(--obsidian-border);
+  }
+
+  .website-img-main img {
+    width: 100%;
+    display: block;
+    border-radius: 0.6mm;
+    border: 0.2mm solid var(--obsidian-border);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .app-item img {
+    height: 32mm;
+  }
+
+  .car-design-item img {
+    object-fit: contain;
+    object-position: center;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 1.1mm;
+  }
+
+  .app-label {
+    position: absolute;
+    bottom: 0.8mm;
+    left: 0.8mm;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.25pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.10em;
+    background: rgba(5, 5, 5, 0.8);
+    padding: 0.45mm 1.2mm;
+    border-radius: 0.3mm;
+    backdrop-filter: blur(2px);
+  }
+
+  .app-desc {
+    font-size: 7.75pt;
+    color: var(--white-muted);
+    line-height: 1.38;
+  }
+
+  .app-desc strong {
+    color: var(--white-dim);
+    font-weight: 600;
+  }
+
+  /* Jersey row */
+  .jersey-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.6mm;
+    margin-bottom: 0.8mm;
+  }
+
+  .jersey-item img {
+    width: 100%;
+    height: 40mm;
+    object-fit: contain;
+    display: block;
+  }
+
+  .jersey-label {
+    position: absolute;
+    bottom: 0.8mm;
+    left: 0.8mm;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 6.25pt;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.10em;
+    background: rgba(5, 5, 5, 0.8);
+    padding: 0.45mm 1.2mm;
+    border-radius: 0.3mm;
+  }
+
+  .identity-app-card .eval-caption {
+    margin-top: auto;
+  }
+
+  /* Website showcase */
+  .website-showcase {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+    padding: 2mm 2.4mm 1mm;
+  }
+
+  .website-showcase .section-title {
+    margin-bottom: 0.95mm;
+  }
+
+  .website-showcase-grid {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .website-img-main {
+    margin-bottom: 0.8mm;
+  }
+
+  .website-img-main img {
+    height: 32mm;
+  }
+
+  .website-text {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-top: 0.2mm;
+  }
+
+  .website-text .brand-mark-body {
+    width: 100%;
+    text-align: left;
+  }
+
+  /* ===== PRINT BUTTON ===== */
+  .print-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--obsidian);
+    background: var(--gold);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    box-shadow: 0 2px 12px rgba(229, 184, 11, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .print-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(229, 184, 11, 0.45);
+  }
+
+  @media print {
+    .print-btn { display: none !important; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">PRINT / PDF</button>
+
+<div class="page">
+
+  <!-- ===== HEADER STRIP ===== -->
+  <header class="header">
+    <div class="header-left">Qualifinals Portfolio &middot; 2025-2026</div>
+    <div class="header-center">Team Identity</div>
+    <div class="header-right">
+      <img src="../TeamSuccessors/public/brand/logo.svg" alt="Successors Logo">
+      <span class="header-page-num">01</span>
+    </div>
+  </header>
+
+  <!-- ===== 3-COLUMN BODY ===== -->
+  <div class="body-grid">
+
+    <!-- ========== LEFT COLUMN ========== -->
+    <div class="col">
+
+      <!-- OUR NAME -->
+      <div class="glass-card brackets name-block">
+        <div class="section-title">Our Name</div>
+        <div class="heading-lg" data-text="SUCCESSORS">SUCCESSORS</div>
+        <p class="body-text">Last year marked the introduction of STEM Racing to GEMS Founders School, where the first team, Team Founders, excelled in the Professional category, securing 6th place alongside two prestigious awards: Best Pit Display and Best Verbal Presentation. Yet, despite these achievements, their journey remained unfinished. Driven by a shared ambition to represent GFS and the UAE on the international stage, Team Successors was born with clear purpose and intent. Our identity is centred on the legacy we inherit, not simply to follow it, but to advance it. We carry forward the responsibility of completing what was left unfinished: to become national champions and raise the UAE flag on the stage of the world's most prestigious STEM competition.</p>
+        <p class="eval-caption">Chosen for its dual meaning: legacy carried forward with clear momentum, progression, and, leadership.</p>
+      </div>
+
+      <!-- VALUES & IDENTITY -->
+      <div class="glass-card">
+        <div class="section-title">Values &amp; Identity</div>
+        <div class="tagline">Inheriting the Legacy. Defining the Future.</div>
+        <p class="tagline-explain">Our motto is a reflection of what Team Successors stands for: respecting the work established by the inaugural team whilst pushing ourselves to set a new standard. For us, it is about progress, not imitation.</p>
+        <div class="values-grid">
+          <div class="value-pill">
+            <strong>Growth Mindset</strong>
+            <span>Our mindset revolves around continuous and progressive improvement, as we seek to constantly elevate our standards as a team.</span>
+          </div>
+          <div class="value-pill">
+            <strong>Responsibility</strong>
+            <span>We acknowledge the responsibility and sense of accountability that stems from inheriting the school's identity and legacy.</span>
+          </div>
+          <div class="value-pill">
+            <strong>Innovation</strong>
+            <span>We challenge ourselves to think differently, solve problems creatively, and keep improving beyond expectations throughout our work.</span>
+          </div>
+          <div class="value-pill">
+            <strong>Ambition</strong>
+            <span>We have always sought to create a new benchmark for what a STEM Racing team is capable of, both within the UAE and internationally.</span>
+          </div>
+        </div>
+        <div class="school-label">GEMS Founders School &middot; Dubai, UAE.</div>
+      </div>
+
+      <div class="glass-card who-we-are-card">
+        <div class="section-title">Who we are</div>
+        <div class="team-people-grid">
+          <div class="team-person-card">
+            <div class="team-person-media">
+              <img src="../TeamSuccessors/public/photos/team/yahya-headshot.png" alt="Yahya Murad headshot">
+            </div>
+            <div class="team-person-copy">
+              <div class="team-person-role">Team Principal</div>
+              <div class="team-person-name">Yahya Murad</div>
+            </div>
+          </div>
+          <div class="team-person-card">
+            <div class="team-person-media">
+              <img src="../TeamSuccessors/public/photos/team/adam-headshot.png" alt="Adam Hussien headshot">
+            </div>
+            <div class="team-person-copy">
+              <div class="team-person-role">Head of Enterprise</div>
+              <div class="team-person-name">Adam Hussien</div>
+            </div>
+          </div>
+          <div class="team-person-card">
+            <div class="team-person-media">
+              <img src="../TeamSuccessors/public/photos/team/vihaann-headshot.png" alt="Vihaann Goswami headshot">
+            </div>
+            <div class="team-person-copy">
+              <div class="team-person-role">Graphic Designer</div>
+              <div class="team-person-name">Vihaann Goswami</div>
+            </div>
+          </div>
+          <div class="team-person-card">
+            <div class="team-person-media">
+              <img src="../TeamSuccessors/public/photos/team/sajjad-headshot.png" alt="Sajjad Jahanzad headshot">
+            </div>
+            <div class="team-person-copy">
+              <div class="team-person-role">Head of Engineering</div>
+              <div class="team-person-name">Sajjad Jahanzad</div>
+            </div>
+          </div>
+          <div class="team-person-card">
+            <div class="team-person-media">
+              <img src="../TeamSuccessors/public/photos/team/ahmed-headshot.png" alt="Ahmed Lebdah headshot">
+            </div>
+            <div class="team-person-copy">
+              <div class="team-person-role">Analytic Engineer</div>
+              <div class="team-person-name">Ahmed Lebdah</div>
+            </div>
+          </div>
+          <div class="team-person-card">
+            <div class="team-person-media">
+              <img src="../TeamSuccessors/public/photos/team/piyush-headshot.png" alt="Piyush Garg headshot">
+            </div>
+            <div class="team-person-copy">
+              <div class="team-person-role">Design Engineer</div>
+              <div class="team-person-name">Piyush Garg</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== CENTER COLUMN ========== -->
+    <div class="col">
+
+      <!-- LOGO DEVELOPMENT -->
+      <div class="glass-card brackets logo-dev-section">
+        <div class="section-title">Logo Development</div>
+        <div class="section-subtitle">From concept to final logo - a process-driven identity.</div>
+
+        <div class="logo-stages">
+          <div class="logo-stage">
+            <div class="logo-stage-num">01</div>
+            <div class="logo-stage-title">Initial Concept</div>
+            <div class="logo-stage-media">
+              <img class="stage-image" src="Team-Identity Public/Inital Concept - PNG.png" alt="Initial concept development stage">
+            </div>
+            <p class="logo-stage-text">We looked at different Formula 1 circuits and combined multiple sections from different tracks to construct a crown-shaped logo.</p>
+          </div>
+          <div class="logo-stage">
+            <div class="logo-stage-num">02</div>
+            <div class="logo-stage-title">Digital Construction</div>
+            <div class="logo-stage-media">
+              <img class="stage-image" src="Team-Identity Public/Digital Construction - PNG.png" alt="Digital construction development stage">
+            </div>
+            <p class="logo-stage-text">We transferred the sketch into a digital prototype by adjusting the circuit sections into an orientation where the crown shape was shown clearly.</p>
+          </div>
+          <div class="logo-stage">
+            <div class="logo-stage-num">03</div>
+            <div class="logo-stage-title">Visual Refinement</div>
+            <div class="logo-stage-media">
+              <img class="stage-image" src="Team-Identity Public/Colors and Lockup - PNG.png" alt="Colour and lockup development stage">
+            </div>
+            <p class="logo-stage-text">Purple and gold were used as the primary colours within our identity, linking our name to achievement, leadership, and championship ambition.</p>
+          </div>
+          <div class="logo-stage">
+            <div class="logo-stage-num">04</div>
+            <div class="logo-stage-title">Final Logo</div>
+            <div class="logo-stage-media">
+              <img class="stage-image" src="Team-Identity Public/Final Mark - PNG.png" alt="Final mark development stage">
+            </div>
+            <p class="logo-stage-text">The final logo combines track-based geometry, intentional incompleteness, and a clear crown silhouette into one cohesive identity.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CROWN CONSTRUCTION IMAGE -->
+      <div class="glass-card crown-construction crown-brand-combo">
+        <div class="section-title">Logo - Detailed Breakdown</div>
+        <div class="crown-brand-block">
+          <img src="Team-Identity Public/Crown-Annotated-With-Tracks-PNG.png" alt="Annotated crown showing F1 track fragments used in logo construction">
+          <div class="crown-construction-label">F1 circuit fragments composing the crown silhouette</div>
+          <div class="brand-mark-copy">
+            <p class="brand-mark-body">The final Team Successors logo transforms a crown into a constructed symbol made from fragments of iconic Formula 1 circuits, including Monza, Austin, Marina Bay, Losail, Imola, Silverstone, Yas Marina, Sakhir, and, Mexico. This gives the logo two meanings at once: a crown representing ambition and succession, and a track-based structure that directly connects our identity to our passion for F1. It is intentionally incomplete in its geometry to place emphasis on the unfinished mission we aspire to fulfil: becoming national champions.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLOR SYSTEM -->
+      <div class="glass-card">
+        <div class="section-title">Color System</div>
+        <div class="color-swatches">
+          <div class="swatch-row">
+            <div class="swatch-block" style="background: #3A0CA3;"></div>
+            <div class="swatch-info">
+              <div class="swatch-hex">#3A0CA3</div>
+              <div class="swatch-name">Purple</div>
+              <p class="swatch-rationale">Primary brand colour that reflects ambition, identity, and the link between enterprise and engineering.</p>
+            </div>
+          </div>
+          <div class="swatch-row">
+            <div class="swatch-block" style="background: #E5B80B;"></div>
+            <div class="swatch-info">
+              <div class="swatch-hex">#E5B80B</div>
+              <div class="swatch-name">Gold</div>
+              <p class="swatch-rationale">Main accent colour used for the crown, representing achievement, excellence, and ambition.</p>
+            </div>
+          </div>
+          <div class="swatch-row">
+            <div class="swatch-block" style="background: #050505; border-color: rgba(255,255,255,0.2);"></div>
+            <div class="swatch-info">
+              <div class="swatch-hex">#050505</div>
+              <div class="swatch-name">Black</div>
+              <p class="swatch-rationale">Base colour that gives the identity a premium, controlled background inspired by carbon fibre.</p>
+            </div>
+          </div>
+          <div class="swatch-row">
+            <div class="swatch-block" style="background: #FFFFFF;"></div>
+            <div class="swatch-info">
+              <div class="swatch-hex">#FFFFFF</div>
+              <div class="swatch-name">White</div>
+              <p class="swatch-rationale">Supporting neutral colour used to maintain clarity, contrast, and legibility across dark layouts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card why-purple-card">
+        <div class="section-title">Why Purple?</div>
+        <div class="why-purple-diagram">
+          <div class="why-purple-node">
+            <div class="why-purple-swatch" style="background: var(--why-purple-red);"></div>
+            <div class="why-purple-label">Red</div>
+            <div class="why-purple-hex">#B0161D</div>
+          </div>
+          <div class="why-purple-operator">+</div>
+          <div class="why-purple-node">
+            <div class="why-purple-swatch" style="background: var(--why-purple-blue);"></div>
+            <div class="why-purple-label">Blue</div>
+            <div class="why-purple-hex">#0032A0</div>
+          </div>
+          <div class="why-purple-operator">=</div>
+          <div class="why-purple-node">
+            <div class="why-purple-swatch" style="background: var(--purple);"></div>
+            <div class="why-purple-label">Purple</div>
+            <div class="why-purple-hex">#3A0CA3</div>
+          </div>
+        </div>
+        <div class="website-text brand-mark-copy">
+          <p class="brand-mark-body">Red represents enterprise, while blue represents engineering. When combined, both form purple, our primary brand colour, symbolising how we operate as one cohesive and unified team.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========== RIGHT COLUMN ========== -->
+    <div class="col">
+
+      <!-- TYPOGRAPHY -->
+      <div class="glass-card">
+        <div class="section-title">Typography</div>
+        <div class="type-entries">
+          <div class="type-entry">
+            <div class="type-entry-header">
+              <span class="type-entry-name">Orbitron</span>
+            </div>
+            <p class="type-entry-desc">Used in website and reel for key headings.</p>
+          </div>
+          <div class="type-entry">
+            <div class="type-entry-header">
+              <span class="type-entry-name sample-montserrat">Montserrat</span>
+            </div>
+            <p class="type-entry-desc">Used in website and reel for body.</p>
+          </div>
+          <div class="type-entry">
+            <div class="type-entry-header">
+              <span class="type-entry-name-render-wrap">
+                <img class="type-entry-name-render type-entry-name-render-midnight" src="Team-Identity Public/Midnight Sans Pro Straight 48 Regular 44px-Render.png" alt="Midnight Sans Pro Straight 48 Regular">
+              </span>
+            </div>
+            <p class="type-entry-desc">Used in logos, banners, and presentation headlines.</p>
+          </div>
+          <div class="type-entry">
+            <div class="type-entry-header">
+              <span class="type-entry-name-render-wrap">
+                <img class="type-entry-name-render type-entry-name-render-hooptie" src="Team-Identity Public/Hooptie Script Star Chief 44px-Render.png" alt="Hooptie Script Star Chief">
+              </span>
+            </div>
+            <p class="type-entry-desc">Used for our motto.</p>
+          </div>
+        </div>
+        <p class="eval-caption">Our choice of typography balances bold display fonts with clear body text to maintain both impact and readability.</p>
+      </div>
+
+      <!-- IDENTITY IN APPLICATION -->
+      <div class="glass-card identity-app-card">
+        <div class="section-title">Identity in Application</div>
+        <p class="app-intro">We've applied the Team Successors identity across the reel, car render, social media, banners, backboards, website, and team jersey. This wide range shows that our brand works as a complete system, not just a final logo.</p>
+
+        <div class="app-grid">
+          <div class="app-item">
+            <img src="Team-Identity Public/Instagram Reel - Screenshot.png" alt="Instagram Reel">
+            <span class="app-label">Instagram Reel</span>
+          </div>
+          <div class="app-item car-design-item">
+            <img src="Team-Identity Public/Current Car Design Right.png" alt="Car Design">
+            <span class="app-label">Car Design</span>
+          </div>
+        </div>
+
+        <div class="jersey-row">
+          <div class="jersey-item">
+            <img src="Team-Identity Public/front-shirt-all-car.png" alt="Team Jersey Front">
+            <span class="jersey-label">Jersey Front</span>
+          </div>
+          <div class="jersey-item">
+            <img src="Team-Identity Public/back-shirt-all.png" alt="Team Jersey Back">
+            <span class="jersey-label">Jersey Back</span>
+          </div>
+        </div>
+
+        <p class="app-desc"><strong>Team Jersey</strong> - The jersey brings our identity into a physical format through a dark motorsport-inspired base, gold details, purple accents, sponsor placement, and a carbon-fibre texture. The front and back designs both consist of these elements in a way that feels practical, and team-focused.</p>
+
+        <p class="eval-caption">Using the same system across digital, visual, and physical outputs makes our identity feel recognisable, adaptable, and coherent.</p>
+      </div>
+
+      <!-- WEBSITE -->
+      <div class="glass-card brackets website-showcase">
+        <div class="section-title">Website - Digital Brand</div>
+        <div class="website-showcase-grid">
+          <div class="website-img-main">
+            <img src="Team-Identity Public/Website-Hero Website -Screenshot.png" alt="Website Homepage">
+            <span class="app-label">Website Homepage</span>
+          </div>
+          <div class="website-img-main">
+            <img src="Team-Identity Public/What-is-F1-in-Schools Website-Screenshot.png" alt="What is F1 in Schools section">
+            <span class="app-label">What is F1 in Schools</span>
+          </div>
+          <div class="website-text brand-mark-copy">
+            <p class="brand-mark-body">Our website applies the same purple-gold palette, atmospheric lighting, glass cards, and typography to create a polished visual experience. These elements make the website feel consistent and connected to our team identity.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /body-grid -->
+
+</div><!-- /page -->
+
+</body>
+</html>
