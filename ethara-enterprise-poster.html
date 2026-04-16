@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Successors — GFS Ethara Enterprise Competition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    /* Portfolio-aligned palette, lifted slightly for poster energy */
+    --ink:           #0a0524;
+    --obsidian:      #050505;
+    --obsidian-card: rgba(255, 255, 255, 0.04);
+    --obsidian-border: rgba(255, 255, 255, 0.08);
+    --purple-deep:   #1a0b46;
+    --purple:        #3A0CA3;
+    --purple-light:  #5A2ED6;
+    --purple-glow:   rgba(58, 12, 163, 0.30);
+    --gold:          #E5B80B;
+    --gold-bright:   #FFD23F;
+    --gold-dim:      rgba(229, 184, 11, 0.55);
+    --gold-faint:    rgba(229, 184, 11, 0.18);
+    --gold-glow:     rgba(229, 184, 11, 0.12);
+    --light-leak-opacity: 0.50;
+    --white:         #FFFFFF;
+    --white-dim:     rgba(255, 255, 255, 0.72);
+    --white-muted:   rgba(255, 255, 255, 0.45);
+    --hairline:      rgba(255, 255, 255, 0.10);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+  }
+
+  @page {
+    size: 1080px 1350px;
+    margin: 0;
+  }
+
+  html, body {
+    background: var(--obsidian);
+    font-family: 'Montserrat', sans-serif;
+    color: var(--white);
+    min-height: 100%;
+    overflow-x: auto;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  body {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .page {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1080px;
+  }
+
+  .print-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt;
+    font-weight: 700;
+    color: var(--obsidian);
+    background: var(--gold);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    box-shadow: 0 2px 12px rgba(229, 184, 11, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .print-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(229, 184, 11, 0.45);
+  }
+
+  /* ============================================================
+     POSTER CANVAS · 1080 x 1350
+     Cinematic, portfolio-adjacent. Built on a deep purple field
+     with photographic light leaks (gold top-right, violet
+     bottom-left), a fine grid, and noise — the same atmospheric
+     stack as the portfolio pages, opened up a stop for poster use.
+     ============================================================ */
+  .poster {
+    width: 1080px;
+    height: 1350px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--white);
+    background:
+      /* gold top-right leak */
+      radial-gradient(ellipse 720px 540px at 92% -8%,  rgba(255, 210, 63, 0.24) 0%, transparent 65%),
+      /* violet bottom-left leak */
+      radial-gradient(ellipse 900px 720px at -10% 110%, rgba(90, 40, 195, 0.42) 0%, transparent 65%),
+      /* deep base — keeps it grounded, not flat */
+      linear-gradient(172deg, #100621 0%, #1b0c47 50%, #2d1374 100%);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  /* Film grain — same recipe as portfolio */
+  .poster::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Subtle architectural grid, faded toward edges */
+  .grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 90%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Outer poster frame — sharp gold hairline, portfolio-style brackets */
+  .frame {
+    position: absolute;
+    inset: 22px;
+    border: 1px solid rgba(255,255,255,0.06);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .frame::before, .frame::after,
+  .frame > i:first-child, .frame > i:last-child {
+    content: '';
+    position: absolute;
+    width: 28px; height: 28px;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .frame::before        { top: -1px;    left: -1px;    border-width: 1.5px 0 0 1.5px; }
+  .frame::after         { bottom: -1px; right: -1px;   border-width: 0 1.5px 1.5px 0; }
+  .frame > i:first-child{ top: -1px;    right: -1px;   border-width: 1.5px 1.5px 0 0; }
+  .frame > i:last-child { bottom: -1px; left: -1px;    border-width: 0 0 1.5px 1.5px; }
+
+  /* ============================================================
+     CONTENT SHELL
+     ============================================================ */
+  .content {
+    position: relative;
+    z-index: 4;
+    padding: 58px 64px 42px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ---------- TOP STRIP ---------- */
+  .top-strip {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .top-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-self: start;
+    text-transform: uppercase;
+  }
+
+  .top-wordmark {
+    position: relative;
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .top-wordmark::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.55;
+    color: transparent;
+    background: linear-gradient(
+      90deg,
+      rgba(58, 12, 163, 0.18) 0%,
+      rgba(58, 12, 163, 0.18) 30%,
+      rgba(85, 43, 175, 0.17) 40%,
+      rgba(121, 76, 140, 0.16) 50%,
+      rgba(172, 130, 77, 0.17) 60%,
+      rgba(229, 184, 11, 0.18) 70%,
+      rgba(229, 184, 11, 0.18) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .top-center {
+    display: flex; align-items: center; gap: 14px;
+    justify-self: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.42em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+  .top-left .crown,
+  .top-center .crown {
+    width: 62px; height: 62px; flex-shrink: 0; display: block; object-fit: contain;
+  }
+  .top-right {
+    justify-self: end;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    color: var(--white-muted);
+    text-transform: uppercase;
+  }
+  .top-right .gold { color: var(--gold); }
+
+  /* ============================================================
+     HERO — title + real car render composed cinematically
+     The car is the visual hero. Title sits left, car bleeds right.
+     A single zone, no rounded box, no card.
+     ============================================================ */
+  .hero {
+    position: relative;
+    margin-top: 30px;
+    height: 620px;
+  }
+
+  /* Real car render — big, crisp, motorsport-photographic */
+  .hero-car {
+    position: absolute;
+    right: -160px;
+    top: 50px;
+    width: 1180px;
+    height: auto;
+    z-index: 2;
+    transform: rotate(-2deg);
+    opacity: 0.96;
+    filter:
+      brightness(1.02)
+      contrast(1.08)
+      blur(2.5px)
+      drop-shadow(0 30px 50px rgba(0,0,0,0.55))
+      drop-shadow(0 0 60px rgba(255, 210, 63, 0.18));
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  /* Soft pool of warm light under the car for grounding */
+  .hero-light {
+    position: absolute;
+    right: -120px; top: 380px;
+    width: 1100px; height: 280px;
+    background: radial-gradient(ellipse, rgba(255, 210, 63, 0.22), transparent 65%);
+    filter: blur(8px);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Title block sits on top of car */
+  .title-zone {
+    position: relative;
+    z-index: 3;
+    max-width: 780px;
+    padding-bottom: 64px;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.34em;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+    padding: 11px 0;
+    border-top: 1px solid var(--gold-faint);
+    border-bottom: 1px solid var(--gold-faint);
+    margin-bottom: 28px;
+  }
+  .eyebrow .num {
+    color: var(--white);
+    font-weight: 800;
+  }
+  .eyebrow .pipe {
+    width: 1px; height: 12px; background: var(--gold-faint);
+  }
+
+  .pretitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.42em;
+    color: var(--white-muted);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 115px;
+    line-height: 0.88;
+    letter-spacing: -0.005em;
+    color: var(--white);
+    text-transform: uppercase;
+    filter:
+      drop-shadow(0 4px 12px rgba(6, 0, 30, 0.55))
+      drop-shadow(0 12px 28px rgba(10, 0, 50, 0.4));
+  }
+  .title .accent {
+    display: block;
+    background: linear-gradient(180deg, #FFE89A 0%, #FFD23F 55%, #E5B80B 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .subline {
+    margin-top: 26px;
+    max-width: 700px;
+    font-family: 'Montserrat', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.55;
+    color: var(--white-dim);
+  }
+  .subline::before {
+    content: '';
+    display: block;
+    width: 38px;
+    height: 2px;
+    background: var(--gold);
+    margin-bottom: 14px;
+  }
+
+  /* Date stamp sits at bottom-left of hero, telemetry-style */
+  .date-stamp {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: auto auto 1px minmax(0, 1fr) 1px minmax(0, 1fr);
+    align-items: end;
+    column-gap: 24px;
+    padding-top: 21px;
+    border-top: 1px solid var(--hairline);
+    width: 100%;
+  }
+  .date-stamp .day {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 82px;
+    line-height: 0.85;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+  .date-stamp .month-stack {
+    display: flex; flex-direction: column;
+    font-family: 'Orbitron', sans-serif;
+    line-height: 1;
+    padding-bottom: 6px;
+  }
+  .date-stamp .month {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    color: var(--gold-bright);
+  }
+  .date-stamp .yr {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.36em;
+    color: var(--white-muted);
+    margin-top: 8px;
+  }
+  .date-stamp .vline {
+    width: 1px;
+    align-self: stretch;
+    background: var(--gold-faint);
+    margin: 0;
+  }
+  .date-stamp .meta {
+    display: flex; flex-direction: column;
+    gap: 8px;
+    padding-bottom: 10px;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .date-stamp .meta .lbl {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .date-stamp .meta .val {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+  .date-stamp .meta .val em {
+    font-style: normal;
+    color: var(--white-dim);
+    font-weight: 400;
+  }
+
+  /* ============================================================
+     EDITORIAL PLATE — single info zone, no card-stack
+     One thin glass plate, three columns separated by gold hairlines.
+     Lifted directly from the portfolio's plate language.
+     ============================================================ */
+  .plate {
+    position: relative;
+    margin-top: 24px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid var(--hairline);
+    border-radius: 6px;
+    padding: 30px 36px 34px;
+    backdrop-filter: blur(2px);
+  }
+  /* tech brackets */
+  .plate::before, .plate::after {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .plate::before { top: 8px;    left: 8px;    border-width: 1.5px 0 0 1.5px; }
+  .plate::after  { bottom: 8px; right: 8px;   border-width: 0 1.5px 1.5px 0; }
+
+  .plate-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 26px;
+  }
+  .plate-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 1000;
+    letter-spacing: 0.34em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .plate-tag {
+    font-family: 'Montserrat', sans-serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--white-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .plate-body {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    gap: 32px;
+    transition: gap 0.18s ease;
+  }
+  .plate-divider {
+    background: linear-gradient(180deg, transparent, var(--gold-faint) 30%, var(--gold-faint) 70%, transparent);
+  }
+
+  .poster.use-minimal-layout .plate-body {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+  }
+
+  .poster.use-minimal-layout .plate-divider {
+    display: none;
+  }
+
+  .poster.use-minimal-layout .col {
+    min-width: 0;
+  }
+
+  .poster.use-minimal-layout .col:not(:last-child) {
+    padding-right: 28px;
+    border-right: 1px solid var(--gold-faint);
+  }
+
+  .poster.hide-awards-detail .awards-row {
+    display: none;
+  }
+
+  .col h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .col h3::before {
+    content: attr(data-num);
+    display: inline-block;
+    margin-right: 10px;
+    color: var(--white-muted);
+    font-weight: 800;
+  }
+  .col p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.62;
+    color: var(--white-dim);
+  }
+  .col p strong {
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  /* Awards: type-driven, no medal pills */
+  .awards-row {
+    display: flex;
+    gap: 18px;
+    margin-top: 14px;
+  }
+  .award {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 10px;
+    border-top: 1px solid var(--gold-faint);
+  }
+  .award .place {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+  }
+  .award .amt {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    margin-top: 6px;
+  }
+  .award .amt sup {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--gold-bright);
+    letter-spacing: 0.2em;
+    margin-left: 4px;
+    vertical-align: super;
+  }
+
+  /* ============================================================
+     FACT RAIL — slim telemetry strip (replaces the white capsule)
+     ============================================================ */
+  .fact-rail {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--gold-faint);
+    border-bottom: 1px solid var(--gold-faint);
+  }
+  .fact {
+    padding: 16px 18px;
+    border-right: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .fact:last-child { border-right: none; }
+  .fact .lbl {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .fact .val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.04em;
+  }
+  .fact .val em {
+    font-style: normal;
+    font-weight: 500;
+    color: var(--white-dim);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+  }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .footer {
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .footer-right {
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--white-muted);
+    line-height: 1.8;
+  }
+  .footer-right .hash { color: var(--gold-bright); }
+  .footer-right .div  {
+    display: inline-block; width: 1px; height: 15px;
+    background: rgba(229, 184, 11, 0.42);
+    margin: 0 10px; vertical-align: middle;
+  }
+
+  @media print {
+    html, body {
+      width: 1080px;
+      height: 1350px;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    body {
+      display: block;
+      min-height: auto;
+    }
+
+    .page,
+    .poster {
+      width: 1080px;
+      height: 1350px;
+    }
+
+    body::before,
+    body::after,
+    .page::before,
+    .print-btn {
+      display: none !important;
+    }
+
+    .poster {
+      box-shadow: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<button class="print-btn" onclick="window.print()">PRINT / PDF</button>
+
+<div class="page">
+<div class="poster">
+  <div class="grid-overlay"></div>
+  <div class="frame"><i></i><i></i></div>
+
+  <div class="content">
+
+    <!-- ============================================================
+         TOP STRIP — portfolio-page header in poster scale
+         ============================================================ -->
+    <header class="top-strip">
+      <div class="top-left">
+        <img class="crown" src="../TeamSuccessors/public/brand/logo.svg" alt="Successors logo">
+        <span class="top-wordmark" data-text="SUCCESSORS">SUCCESSORS</span>
+      </div>
+      <div class="top-center"></div>
+      <div class="top-right">F1 IN SCHOOLS · STEM RACING</div>
+    </header>
+
+    <!-- ============================================================
+         HERO — title locked left, real car render bleeds right
+         The whole hero is one cinematic zone. No box, no rounded card.
+         ============================================================ -->
+    <section class="hero">
+
+      <img class="hero-car" src="Cover Public/Cover Car Render PNG.png" alt="Team Successors F1 in Schools car render">
+      <div class="hero-light"></div>
+
+      <div class="title-zone">
+
+        <div class="eyebrow">
+          ENTERPRISE COMPETITION
+        </div>
+
+        <h1 class="title">
+          ETHARA<br>
+          <span class="accent">PITCH ARENA</span>
+        </h1>
+
+        <p class="subline">
+          A live competition simulating real-world sponsorship, where student teams pitch
+          themselves as high-value partners, presenting identity, innovation and impact
+          to a panel of judges.
+        </p>
+
+      </div>
+
+      <!-- Date stamp lives at the bottom of the hero, like a telemetry readout -->
+      <div class="date-stamp">
+        <div class="day">24</div>
+        <div class="month-stack">
+          <div class="month">APRIL</div>
+          <div class="yr">FRIDAY · 2026</div>
+        </div>
+        <div class="vline"></div>
+        <div class="meta">
+          <div class="lbl">Venue</div>
+          <div class="val">GEMS Founders School <em>· Dubai</em></div>
+        </div>
+        <div class="vline"></div>
+        <div class="meta">
+          <div class="lbl">Format</div>
+          <div class="val">Live Sponsor Pitch <em>· Judged</em></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================
+         EDITORIAL PLATE — single info zone with three columns
+         Replaces the previous three glass cards. Type-driven, sharp.
+         ============================================================ -->
+    <section class="plate">
+      <div class="plate-header">
+        <div class="plate-title">Event Brief</div>
+        <div class="plate-tag">hosted by Team Successors</div>
+      </div>
+
+      <div class="plate-body">
+
+        <div class="col">
+          <h3 data-num="01">Concept</h3>
+          <p>Teams take the role of <strong>sponsor-facing presenters</strong>, pitching identity, innovation and ROI to a live audience of judges in a fast-paced sponsorship simulation.</p>
+        </div>
+
+        <div class="plate-divider"></div>
+
+        <div class="col">
+          <h3 data-num="02">Objective</h3>
+          <p>Develop <strong>persuasive, sponsor-aware</strong> presentation skills with clarity of structure, commercial framing, and real-world business awareness under pressure.</p>
+        </div>
+
+        <div class="plate-divider"></div>
+
+        <div class="col">
+          <h3 data-num="03">Awards</h3>
+          <p>Top three placements share a <strong>500+ AED prize pool</strong>. Every participant also receives branded merchandise and exclusive giveaways provided by Team Successors' sponsors.</p>
+          <div class="awards-row">
+            <div class="award"><div class="place">1ST</div><div class="amt">300<sup>AED</sup></div></div>
+            <div class="award"><div class="place">2ND</div><div class="amt">200<sup>AED</sup></div></div>
+            <div class="award"><div class="place">3RD</div><div class="amt">100<sup>AED</sup></div></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FACT RAIL — slim, telemetry-style facts
+         ============================================================ -->
+    <section class="fact-rail">
+      <div class="fact">
+        <div class="lbl">Prize Pool</div>
+        <div class="val">500+ <em>AED</em></div>
+      </div>
+      <div class="fact">
+        <div class="lbl">Hosted with</div>
+        <div class="val">Ethara <em>Junior Team</em></div>
+      </div>
+      <div class="fact">
+        <div class="lbl">Backed by</div>
+        <div class="val">5 <em>Sponsors</em></div>
+      </div>
+      <div class="fact">
+        <div class="lbl">For every entrant</div>
+        <div class="val">Branded <em>Merch</em></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="footer">
+      <div class="footer-right">
+        <span class="hash">#</span>ETHARAENTERPRISE
+        <span class="div"></span>
+        GFS · DUBAI
+      </div>
+    </footer>
+
+  </div>
+</div>
+</div>
+
+<script>
+  (() => {
+    const poster = document.querySelector('.poster');
+    const USE_MINIMAL_LAYOUT = true;
+    const SHOW_AWARDS_DETAIL = false;
+
+    if (!poster) return;
+
+    poster.classList.toggle('use-minimal-layout', USE_MINIMAL_LAYOUT);
+    poster.classList.toggle('hide-awards-detail', USE_MINIMAL_LAYOUT && !SHOW_AWARDS_DETAIL);
+  })();
+</script>
+</body>
+</html>
