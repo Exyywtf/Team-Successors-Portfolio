@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Successors — VMake Sponsor Spotlight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink:           #0a0524;
+    --obsidian:      #050505;
+    --purple-deep:   #1a0b46;
+    --purple:        #3A0CA3;
+    --purple-light:  #5A2ED6;
+    --purple-glow:   rgba(58, 12, 163, 0.30);
+    --gold:          #E5B80B;
+    --gold-bright:   #FFD23F;
+    --gold-dim:      rgba(229, 184, 11, 0.55);
+    --gold-faint:    rgba(229, 184, 11, 0.18);
+    --gold-glow:     rgba(229, 184, 11, 0.12);
+    --white:         #FFFFFF;
+    --white-dim:     rgba(255, 255, 255, 0.72);
+    --white-muted:   rgba(255, 255, 255, 0.45);
+    --white-soft:    rgba(255, 255, 255, 0.58);
+    --hairline:      rgba(255, 255, 255, 0.10);
+    --obsidian-card: rgba(255, 255, 255, 0.04);
+    --obsidian-border: rgba(255, 255, 255, 0.08);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.007'/%3E%3C/svg%3E");
+  }
+
+  @page { size: 1080px 1350px; margin: 0; }
+
+  html, body {
+    background: var(--obsidian);
+    font-family: 'Montserrat', sans-serif;
+    color: var(--white);
+    min-height: 100%;
+    overflow-x: auto;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
+  }
+  body {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .page {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1080px;
+  }
+
+  .print-btn {
+    position: fixed; top: 10px; right: 10px; z-index: 9999;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9pt; font-weight: 700;
+    color: var(--obsidian); background: var(--gold);
+    border: none; padding: 8px 20px; border-radius: 4px;
+    cursor: pointer; letter-spacing: 0.1em;
+    box-shadow: 0 2px 12px rgba(229, 184, 11, 0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .print-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(229, 184, 11, 0.45); }
+
+  /* ============================================================
+     POSTER CANVAS | 1080 x 1350 (4:5 Instagram portrait)
+     Layered stack identical to portfolio system:
+       1. obsidian base
+       2. brand-coloured gradient veil + gold/violet light leaks
+       3. film grain (same Perlin recipe as portfolio)
+       4. architectural grid overlay (edge-masked)
+       5. content
+     ============================================================ */
+  .poster {
+    width: 1080px; height: 1350px;
+    position: relative; z-index: 1;
+    overflow: hidden; isolation: isolate;
+    color: var(--white);
+    background: var(--obsidian);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  /* LAYER 2 | brand atmosphere, matched to portfolio language:
+       a soft obsidian base, one purple light leak (bottom-left)
+       and one gold light leak (top-right), same recipe as the
+       portfolio cover & team-identity pages, scaled to 1080x1350. */
+  .atmosphere {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background:
+      /* gold leak, top-right (portfolio recipe) */
+      radial-gradient(ellipse 640px 520px at 108% -10%,
+        rgba(229, 184, 11, 0.10) 0%,
+        rgba(229, 184, 11, 0.04) 35%,
+        transparent 65%),
+      /* purple leak, bottom-left (portfolio recipe) */
+      radial-gradient(ellipse 760px 620px at -12% 112%,
+        rgba(58, 12, 163, 0.32) 0%,
+        rgba(58, 12, 163, 0.12) 45%,
+        transparent 72%),
+      /* obsidian base */
+      var(--obsidian);
+  }
+
+  /* LAYER 3 | film grain (portfolio recipe) */
+  .poster::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: var(--noise);
+    background-repeat: repeat;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  /* ============================================================
+     CONTENT SHELL
+     ============================================================ */
+  .content {
+    position: relative;
+    z-index: 8;
+    padding: 56px 48px 50px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-5px);
+  }
+
+  /* ---------- TOP STRIP ---------- */
+  .top-strip {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--hairline);
+    transform: translateY(-5px);
+  }
+  .top-left {
+    display: flex; align-items: center;
+    gap: 22px; justify-self: start;
+  }
+  .top-left .crown {
+    width: 64px; height: 64px;
+    flex-shrink: 0; display: block;
+    object-fit: contain;
+  }
+  .top-wordmark {
+    position: relative;
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+  .top-wordmark::after {
+    content: attr(data-text);
+    position: absolute; inset: 0; pointer-events: none;
+    opacity: 0.55; color: transparent;
+    background: linear-gradient(
+      90deg,
+      rgba(58, 12, 163, 0.18) 0%,
+      rgba(58, 12, 163, 0.18) 30%,
+      rgba(85, 43, 175, 0.17) 40%,
+      rgba(121, 76, 140, 0.16) 50%,
+      rgba(172, 130, 77, 0.17) 60%,
+      rgba(229, 184, 11, 0.18) 70%,
+      rgba(229, 184, 11, 0.18) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .top-right {
+    justify-self: end;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.32em;
+    color: var(--white-muted);
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .top-right .dot {
+    width: 8px; height: 8px; background: var(--gold);
+    box-shadow: 0 0 10px rgba(229, 184, 11, 0.6);
+  }
+  .top-right .yr {
+    color: var(--gold-bright);
+    letter-spacing: 0.20em;
+    font-weight: 800;
+  }
+
+  /* ---------- HERO BAND ---------- */
+  .hero {
+    margin-top: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12.4px;
+    font-weight: 700;
+    letter-spacing: 0.42em;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+    padding: 10px 24px;
+    border-top: 1px solid var(--gold-faint);
+    border-bottom: 1px solid var(--gold-faint);
+  }
+  .eyebrow .sq {
+    display: none;
+  }
+  .eyebrow .sep { color: var(--gold-dim); font-weight: 900; }
+
+  .headline {
+    margin-top: 28px;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    font-size: 66px;
+    line-height: 0.96;
+    letter-spacing: 0.005em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+  .headline .line { display: block; }
+  .headline .accent {
+    display: block;
+    background: linear-gradient(180deg, #FFE89A 0%, #FFD23F 55%, #E5B80B 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .subline {
+    margin-top: 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 15.8px;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    color: var(--white-soft);
+    max-width: 700px;
+  }
+  .subline strong { color: var(--white); font-weight: 600; }
+
+  /* ============================================================
+     RADIAL SCHEMATIC
+     Container: 920 x 620, tighter, denser composition.
+     8 nodes in two columns flanking a central hub, with only
+     four horizontal connector lines (one per row) passing
+     through the hub for a refined, less diagrammatic feel.
+     ============================================================ */
+  .diagram-stage {
+    position: absolute;
+    left: 48px;
+    right: 48px;
+    bottom: 50px;
+    height: 824px;
+  }
+
+  .diagram {
+    position: relative;
+    width: 984px;
+    height: 824px;
+    margin: 0 auto;
+  }
+
+  .connectors {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    z-index: 7;
+  }
+
+  /* ---------- HUB ---------- */
+  .hub {
+    position: absolute;
+    width: 334px; height: 334px;
+    left: 50%; top: 412px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 8;
+  }
+  .hub-ring {
+    position: absolute; inset: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(229, 184, 11, 0.22);
+    pointer-events: none;
+    z-index: 1;
+  }
+  .hub-ring.outer {
+    inset: -23px;
+    border: 1px dashed rgba(229, 184, 11, 0.18);
+  }
+  .hub-ring.outer-2 {
+    inset: -48px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .hub-core {
+    position: absolute; inset: 22px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 38%, rgba(22, 18, 28, 0.94) 0%, rgba(8, 6, 14, 0.98) 72%);
+    border: 1.5px solid rgba(229, 184, 11, 0.45);
+    box-shadow:
+      0 0 24px rgba(229, 184, 11, 0.14),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 34px 22px;
+    z-index: 8;
+  }
+  .hub-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12.2px;
+    font-weight: 700;
+    letter-spacing: 0.36em;
+    color: var(--gold-bright);
+    text-transform: uppercase;
+  }
+  .hub-logo {
+    height: 122px;
+    width: auto;
+    object-fit: contain;
+  }
+  .hub-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    color: var(--white);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .hub-tag {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10.2px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    color: var(--white-muted);
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    padding-left: 0.32em;
+    line-height: 1.35;
+  }
+
+  /* ---------- NODES ---------- */
+  .node {
+    position: absolute;
+    width: 300px;
+    height: 170px;
+    padding: 20px 22px 18px;
+    background: var(--obsidian-card);
+    border: 1.13px solid var(--obsidian-border);
+    border-radius: 5.67px;
+    backdrop-filter: blur(2px);
+    z-index: 6;
+    overflow: hidden;
+  }
+  /* gold bracket corners on selected nodes */
+  .node.brackets::before, .node.brackets::after {
+    content: '';
+    position: absolute;
+    width: 15px; height: 15px;
+    border-color: var(--gold-dim);
+    border-style: solid;
+    pointer-events: none;
+  }
+  .node.brackets::before { top: 4px; left: 4px; border-width: 1.13px 0 0 1.13px; }
+  .node.brackets::after  { bottom: 4px; right: 4px; border-width: 0 1.13px 1.13px 0; }
+
+  .node-num {
+    position: absolute;
+    top: 20px; right: 22px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13.6px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: var(--gold-dim);
+  }
+  .node-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 17.2px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-transform: uppercase;
+    line-height: 1.18;
+    margin-bottom: 13px;
+    padding-right: 46px;
+  }
+  .node-rule {
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold-bright) 0%, var(--gold-dim) 70%, transparent 100%);
+    margin-bottom: 13px;
+    box-shadow: 0 0 6px rgba(229, 184, 11, 0.30);
+  }
+  .node-desc {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13.8px;
+    font-weight: 400;
+    line-height: 1.54;
+    color: var(--white-soft);
+    letter-spacing: 0.005em;
+  }
+
+  /* node positions, scaled to fill the poster body */
+  .node.l1 { left:   0px; top:   0px; }
+  .node.l2 { left:   0px; top: 218px; }
+  .node.l3 { left:   0px; top: 436px; }
+  .node.l4 { left:   0px; top: 654px; }
+  .node.r1 { left: 684px; top:   0px; }
+  .node.r2 { left: 684px; top: 218px; }
+  .node.r3 { left: 684px; top: 436px; }
+  .node.r4 { left: 684px; top: 654px; }
+
+  @media print {
+    html, body { width: 1080px; height: 1350px; overflow: hidden; background: transparent; }
+    body { display: block; min-height: auto; }
+    .page, .poster { width: 1080px; height: 1350px; }
+    body::before, .print-btn { display: none !important; }
+    .poster { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <button class="print-btn" onclick="window.print()">PRINT / PDF</button>
+
+  <div class="page">
+    <div class="poster">
+      <!-- Layer 2: brand atmosphere, purple + gold light leaks -->
+      <div class="atmosphere"></div>
+
+      <!-- Content -->
+      <div class="content">
+
+        <!-- ===== TOP STRIP ===== -->
+        <div class="top-strip">
+          <div class="top-left">
+            <img class="crown" src="../TeamSuccessors/public/brand/logo.svg" alt="Successors crown logo">
+            <span class="top-wordmark" data-text="SUCCESSORS">SUCCESSORS</span>
+          </div>
+          <div class="top-right">
+            <span class="dot"></span>
+            <span>F1 IN SCHOOLS</span>
+          </div>
+        </div>
+
+        <!-- ===== HERO ===== -->
+        <div class="hero">
+          <div class="eyebrow">
+            <span class="sq"></span>
+            <span>SUCCESSORS &times; VMAKE</span>
+            <span class="sep">·</span>
+            <span>SPONSOR SPOTLIGHT</span>
+          </div>
+
+          <h1 class="headline">
+            <span class="line">How VMake</span>
+            <span class="accent">Powers Our Journey</span>
+          </h1>
+
+          <p class="subline">
+            VMake stands behind <strong>Successors</strong> across every area of F1 in Schools, from engineering to identity, mentorship to media.
+          </p>
+        </div>
+
+        <!-- ===== RADIAL SCHEMATIC ===== -->
+        <div class="diagram-stage">
+        <div class="diagram">
+
+          <!-- SVG connectors, pared back to 4 short horizontal stubs. -->
+          <svg class="connectors" viewBox="0 0 984 824" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lineGoldL" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%"   stop-color="rgba(229,184,11,0.08)"/>
+                <stop offset="100%" stop-color="rgba(229,184,11,0.55)"/>
+              </linearGradient>
+              <linearGradient id="lineGoldR" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0%"   stop-color="rgba(229,184,11,0.08)"/>
+                <stop offset="100%" stop-color="rgba(229,184,11,0.55)"/>
+              </linearGradient>
+            </defs>
+
+            <!-- Left cards into the outer hub ring -->
+            <path d="M300 85 C322 150 338 220 351 285" stroke="url(#lineGoldL)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <path d="M300 303 C322 303 332 320 342 338" stroke="url(#lineGoldL)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <path d="M300 521 C322 521 332 504 342 486" stroke="url(#lineGoldL)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <path d="M300 739 C322 674 338 604 351 539" stroke="url(#lineGoldL)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+
+            <!-- Right cards into the outer hub ring -->
+            <path d="M633 285 C646 220 662 150 684 85" stroke="url(#lineGoldR)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <path d="M642 338 C652 320 662 303 684 303" stroke="url(#lineGoldR)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <path d="M642 486 C652 504 662 521 684 521" stroke="url(#lineGoldR)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+            <path d="M633 539 C646 604 662 674 684 739" stroke="url(#lineGoldR)" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+
+            <!-- Card-edge dots (terminals) -->
+            <circle cx="300" cy="85" r="3" fill="#FFD23F"/>
+            <circle cx="300" cy="303" r="3" fill="#FFD23F"/>
+            <circle cx="300" cy="521" r="3" fill="#FFD23F"/>
+            <circle cx="300" cy="739" r="3" fill="#FFD23F"/>
+            <circle cx="684" cy="85" r="3" fill="#FFD23F"/>
+            <circle cx="684" cy="303" r="3" fill="#FFD23F"/>
+            <circle cx="684" cy="521" r="3" fill="#FFD23F"/>
+            <circle cx="684" cy="739" r="3" fill="#FFD23F"/>
+
+          </svg>
+
+          <!-- ===== HUB ===== -->
+          <div class="hub">
+            <div class="hub-ring outer-2"></div>
+            <div class="hub-ring outer"></div>
+            <div class="hub-ring"></div>
+            <div class="hub-core">
+              <img class="hub-logo" src="Team-Identity Public/VMake Logo LessText.png" alt="VMake logo">
+              <div class="hub-label">CHAMPION SPONSOR</div>
+              <div class="hub-tag">EIGHT WAYS<br>ONE SPONSOR</div>
+            </div>
+          </div>
+
+          <!-- ===== LEFT NODES ===== -->
+          <div class="node brackets l1">
+            <div class="node-num">01</div>
+            <div class="node-title">Financial Backing</div>
+            <div class="node-rule"></div>
+            <div class="node-desc">Funding the high-quality engineering and production our car demands.</div>
+          </div>
+          <div class="node brackets l2">
+            <div class="node-num">02</div>
+            <div class="node-title">Branding Expertise</div>
+            <div class="node-rule"></div>
+            <div class="node-desc">Marketing and identity guidance that sharpens how Successors is presented.</div>
+          </div>
+          <div class="node l3">
+            <div class="node-num">03</div>
+            <div class="node-title">Event Guidance</div>
+            <div class="node-rule"></div>
+            <div class="node-desc">Planning and execution support that keeps every team appearance focused.</div>
+          </div>
+          <div class="node l4">
+            <div class="node-num">04</div>
+            <div class="node-title">Content Support</div>
+            <div class="node-rule"></div>
+            <div class="node-desc">Production help behind the visuals, films, and storytelling we publish.</div>
+          </div>
+
+          <!-- ===== RIGHT NODES ===== -->
+          <div class="node brackets r1">
+            <div class="node-num">05</div>
+            <div class="node-title">Strategic Mentorship</div>
+            <div class="node-rule"></div>
+            <div class="node-desc">Senior guidance on the decisions that shape the trajectory of our season.</div>
+          </div>
+          <div class="node brackets r2">
+            <div class="node-num">06</div>
+            <div class="node-title">Industry Connections</div>
+            <div class="node-rule"></div>
+            <div class="node-desc">Doors opened to the networks where motorsport and engineering converge.</div>
+          </div>
+          <div class="node r3">
+            <div class="node-num">07</div>
+            <div class="node-title">Cross-Sector Access</div>
+            <div class="node-rule"></div>
+            <div class="node-desc">Exposure to opportunities beyond F1 in Schools, including design, media, and business.</div>
+          </div>
+          <div class="node r4">
+            <div class="node-num">08</div>
+            <div class="node-title">Pro Communication</div>
+            <div class="node-rule"></div>
+            <div class="node-desc">Coaching on professional presentation, pitching, and stakeholder voice.</div>
+          </div>
+        </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
