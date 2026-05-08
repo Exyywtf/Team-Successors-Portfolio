@@ -44,6 +44,7 @@
     --hairline-strong: rgba(255, 255, 255, 0.14);
     --card:          rgba(255, 255, 255, 0.025);
     --card-border:   rgba(255, 255, 255, 0.07);
+    --circuit-card-height: 415px;
     --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.020'/%3E%3C/svg%3E");
   }
 
@@ -312,7 +313,7 @@
     align-items: center;
     margin-top: 0;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14.4px;
+    font-size: 12.8px;
     font-weight: 500;
     letter-spacing: 0.20em;
     color: var(--white-muted);
@@ -322,32 +323,32 @@
     color: var(--orange-bright);
     font-weight: 700;
   }
-  .meta-rail .sep { color: var(--orange-dim); margin: 0 10px; }
+  .meta-rail .sep { color: var(--orange-dim); margin: 0 8px; }
 
   /* ---------- F1 STARTING LIGHTS - PRIMARY VISUAL ANCHOR ----------
      Five orange bulbs on a black control bar. This is the Spicebox
      hero motif: minimal, premium, glowing. */
   .lights {
-    margin-top: 36px;
+    margin-top: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 24px;
+    gap: 18px;
   }
   .lights .l-cap {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14.2px;
+    font-size: 12.6px;
     font-weight: 600;
     letter-spacing: 0.34em;
     color: var(--orange-soft);
     text-transform: uppercase;
-    width: 230px;
+    width: 202px;
     text-align: right;
   }
   .lights .l-cap.dim { color: var(--white-muted); text-align: left; }
   .lights .row {
-    display: flex; gap: 18px;
-    padding: 15px 22px;
+    display: flex; gap: 16px;
+    padding: 13px 20px;
     border: 1px solid var(--orange-faint);
     background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(20,12,6,0.75) 100%);
     box-shadow:
@@ -376,18 +377,18 @@
 
   /* ---------- EYEBROW ---------- */
   .eyebrow {
-    margin-top: 34px;
+    margin-top: 24px;
     align-self: center;
     display: inline-flex;
     align-items: center;
-    gap: 18px;
+    gap: 14px;
     font-family: 'Orbitron', sans-serif;
-    font-size: 15.2px;
+    font-size: 13.4px;
     font-weight: 700;
     letter-spacing: 0.42em;
     color: var(--orange-bright);
     text-transform: uppercase;
-    padding: 13px 32px;
+    padding: 10px 24px;
     border-top: 1px solid var(--orange-faint);
     border-bottom: 1px solid var(--orange-faint);
   }
@@ -400,11 +401,11 @@
 
   /* ---------- HEADLINE ---------- */
   .headline {
-    margin-top: 26px;
+    margin-top: 18px;
     text-align: center;
     font-family: 'Orbitron', sans-serif;
     font-weight: 900;
-    font-size: 104px;
+    font-size: 92px;
     line-height: 0.92;
     letter-spacing: 0.005em;
     color: var(--white);
@@ -430,24 +431,24 @@
 
   /* ---------- HOOK ---------- */
   .hook {
-    margin-top: 28px;
+    margin-top: 16px;
     text-align: center;
     font-family: 'Montserrat', sans-serif;
     font-style: italic;
     font-weight: 500;
-    font-size: 23.5px;
+    font-size: 19.6px;
     letter-spacing: 0.04em;
     color: var(--white-dim);
     text-transform: uppercase;
   }
   .hook .gold { color: var(--orange-bright); font-weight: 600; }
-  .hook .dot { color: var(--orange-dim); margin: 0 15px; font-weight: 800; }
+  .hook .dot { color: var(--orange-dim); margin: 0 10px; font-weight: 800; }
 
   /* ---------- AUDIENCE PANEL ---------- */
   .audience {
-    margin-top: 38px;
+    margin-top: 22px;
     position: relative;
-    padding: 30px 34px 31px;
+    padding: 10px 16px;
     background:
       linear-gradient(180deg, rgba(255, 106, 26, 0.06) 0%, rgba(0,0,0,0.20) 100%);
     border: 1px solid var(--card-border);
@@ -467,14 +468,14 @@
   .audience-tag {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 13px;
     font-family: 'Orbitron', sans-serif;
-    font-size: 16.2px;
+    font-size: 13.8px;
     font-weight: 700;
     letter-spacing: 0.40em;
     color: var(--white);
     text-transform: uppercase;
-    margin-bottom: 21px;
+    margin-bottom: 10px;
   }
   .audience-tag .pip {
     width: 10px; height: 10px; border-radius: 50%;
@@ -494,10 +495,24 @@
     max-width: 920px;
   }
   .audience-copy strong { color: var(--white); font-weight: 600; }
+  .audience-image {
+    display: block;
+    width: 100%;
+    max-height: 188px;
+    object-fit: contain;
+    object-position: center;
+  }
+  .circuit-svg {
+    display: block;
+    width: 100%;
+    height: var(--circuit-card-height);
+    margin: 10px auto 0;
+    overflow: hidden;
+  }
 
   /* ---------- FACTS GRID (Race-control panel) ---------- */
   .facts {
-    margin-top: 36px;
+    margin-top: 20px;
     display: grid;
     grid-template-columns: 1.05fr 1fr 1fr 1.05fr;
     gap: 0;
@@ -505,19 +520,19 @@
     background: rgba(255,255,255,0.02);
   }
   .fact {
-    padding: 24px 24px 25px;
+    padding: 16px 18px 17px;
     border-right: 1px solid var(--card-border);
     position: relative;
   }
   .fact:last-child { border-right: none; }
   .fact .lbl {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-size: 11.8px;
     font-weight: 600;
     letter-spacing: 0.30em;
     color: var(--white-muted);
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 7px;
     display: flex; align-items: center; gap: 8px;
   }
   .fact .lbl::before {
@@ -527,7 +542,7 @@
   }
   .fact .val {
     font-family: 'Orbitron', sans-serif;
-    font-size: 20px;
+    font-size: 18.4px;
     font-weight: 800;
     letter-spacing: 0.045em;
     color: var(--white);
@@ -541,9 +556,9 @@
     letter-spacing: 0.04em;
   }
   .fact .sub {
-    margin-top: 6px;
+    margin-top: 4px;
     font-family: 'Montserrat', sans-serif;
-    font-size: 13.1px;
+    font-size: 12px;
     font-weight: 500;
     letter-spacing: 0.075em;
     color: var(--white-muted);
@@ -553,12 +568,12 @@
 
   /* ---------- RACE DAY CALLOUT ---------- */
   .raceday {
-    margin-top: 32px;
+    margin-top: 18px;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 22px;
-    padding: 20px 24px;
+    gap: 16px;
+    padding: 14px 18px;
     border: 1px solid var(--orange-faint);
     background:
       linear-gradient(90deg, rgba(255, 106, 26, 0.16) 0%, rgba(255, 106, 26, 0.04) 60%, rgba(0,0,0,0.30) 100%);
@@ -566,18 +581,18 @@
   }
   .raceday .flag {
     font-family: 'Orbitron', sans-serif;
-    font-size: 14.4px;
+    font-size: 12.6px;
     font-weight: 800;
     letter-spacing: 0.34em;
     color: var(--obsidian);
     background: var(--orange);
-    padding: 7px 15px;
+    padding: 5px 12px;
     text-transform: uppercase;
     box-shadow: 0 0 14px rgba(255, 106, 26, 0.45);
   }
   .raceday .text {
     font-family: 'Orbitron', sans-serif;
-    font-size: 24.8px;
+    font-size: 21px;
     font-weight: 800;
     letter-spacing: 0.10em;
     color: var(--white);
@@ -589,7 +604,7 @@
   }
   .raceday .stamp {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 15px;
+    font-size: 12.8px;
     font-weight: 600;
     letter-spacing: 0.22em;
     color: var(--white-muted);
@@ -820,9 +835,57 @@
               <span class="sep">·</span>
               <span>STEM EXCELLENCE</span>
             </div>
-            <p class="audience-copy">
-              A selective programme for <strong>Year&nbsp;7&nbsp;–&nbsp;9 students excelling in STEM</strong>, built to explore how <strong>AI can be applied ethically</strong> to maximise efficiency, decision-making and innovation across motorsport. Students design real systems, defend them on Race Day, and learn to think like engineers - not just users of technology.
-            </p>
+            <svg id="circuit-svg" class="circuit-svg" viewBox="25 8 750 490" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Spicebox circuit event map">
+              <defs>
+                <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+                <filter id="sglow"><feGaussianBlur stdDeviation="8" result="b"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+              </defs>
+              <path id="ap" d="M 90 380 L 90 280 Q 90 200 160 170 L 280 140 Q 330 125 345 85 Q 358 48 400 38 L 560 38 Q 620 38 645 85 Q 660 118 645 155 L 625 185 Q 608 210 628 235 Q 648 258 695 258 L 740 258 Q 775 258 775 295 Q 775 332 740 345 L 500 345 Q 455 345 438 378 Q 420 412 380 425 L 220 425 Q 150 425 118 405 Q 90 388 90 380 Z" fill="none"></path>
+              <use href="#ap" stroke="#151515" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"></use>
+              <use href="#ap" stroke="#222" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"></use>
+              <use href="#ap" stroke="#2a2a2a" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"></use>
+              <use href="#ap" stroke="#2e2e2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 7"></use>
+              <line x1="82" y1="345" x2="100" y2="345" stroke="rgba(255,255,255,.7)" stroke-width="4"></line>
+              <line x1="82" y1="357" x2="100" y2="357" stroke="rgba(255,255,255,.2)" stroke-width="4"></line>
+              <line x1="82" y1="369" x2="100" y2="369" stroke="rgba(255,255,255,.7)" stroke-width="4"></line>
+              <text x="420" y="215" text-anchor="middle" font-family="Orbitron,monospace" font-size="28" font-weight="900" fill="rgba(246,105,36,.12)" letter-spacing="4">SPICEBOX</text>
+              <text x="420" y="248" text-anchor="middle" font-family="Orbitron,monospace" font-size="14" font-weight="900" fill="rgba(255,255,255,.08)" letter-spacing="7">CIRCUIT</text>
+              <g class="stop-group stop-active" id="stop-1">
+                <circle class="stop-icon-circle" cx="90" cy="225" r="28" fill="#0d0d0d" stroke="#f66924" stroke-width="2"></circle>
+                <text x="90" y="220" text-anchor="middle" font-size="18" fill="#f66924">💡</text>
+                <text x="90" y="234" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="7.5" fill="#f66924" letter-spacing="1">STOP 1</text>
+                <text x="90" y="270" text-anchor="middle" font-family="Orbitron,monospace" font-size="11" font-weight="700" fill="#f66924" letter-spacing="1">IDEATION</text>
+                <text x="90" y="284" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="12" fill="#777" letter-spacing="2">GRID</text>
+              </g>
+              <g class="stop-group" id="stop-2">
+                <circle class="stop-icon-circle" cx="400" cy="40" r="28" fill="#0d0d0d" stroke="#f66924" stroke-width="2"></circle>
+                <text x="400" y="35" text-anchor="middle" font-size="18" fill="#f66924">🔍</text>
+                <text x="400" y="49" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="7.5" fill="#f66924" letter-spacing="1">STOP 2</text>
+                <text x="540" y="36" text-anchor="middle" font-family="Orbitron,monospace" font-size="11" font-weight="700" fill="#f66924" letter-spacing="1">RESEARCH</text>
+                <text x="540" y="50" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="12" fill="#777" letter-spacing="2">APEX</text>
+              </g>
+              <g class="stop-group" id="stop-3">
+                <circle class="stop-icon-circle" cx="750" cy="300" r="28" fill="#0d0d0d" stroke="#f66924" stroke-width="2"></circle>
+                <text x="750" y="295" text-anchor="middle" font-size="18" fill="#f66924">🔧</text>
+                <text x="750" y="309" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="7.5" fill="#f66924" letter-spacing="1">STOP 3</text>
+                <text x="680" y="342" text-anchor="middle" font-family="Orbitron,monospace" font-size="11" font-weight="700" fill="#f66924" letter-spacing="1">BUILDER'S</text>
+                <text x="680" y="356" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="12" fill="#777" letter-spacing="2">ESSES</text>
+              </g>
+              <g class="stop-group stop-active" id="stop-4">
+                <circle class="stop-icon-circle" cx="560" cy="345" r="28" fill="#0d0d0d" stroke="#f66924" stroke-width="2"></circle>
+                <text x="560" y="340" text-anchor="middle" font-size="18" fill="#f66924">🧪</text>
+                <text x="560" y="354" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="7.5" fill="#f66924" letter-spacing="1">STOP 4</text>
+                <text x="560" y="388" text-anchor="middle" font-family="Orbitron,monospace" font-size="11" font-weight="700" fill="#f66924" letter-spacing="1">TEST</text>
+                <text x="560" y="402" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="12" fill="#777" letter-spacing="2">COMPLEX</text>
+              </g>
+              <g class="stop-group" id="stop-5">
+                <circle class="stop-icon-circle" cx="290" cy="425" r="28" fill="#0d0d0d" stroke="#FFD700" stroke-width="2.5"></circle>
+                <text x="290" y="420" text-anchor="middle" font-size="18" fill="#FFD700">🎤</text>
+                <text x="290" y="434" text-anchor="middle" font-family="Share Tech Mono,monospace" font-size="7.5" fill="#FFD700" letter-spacing="1">STOP 5</text>
+                <text x="290" y="468" text-anchor="middle" font-family="Orbitron,monospace" font-size="11" font-weight="700" fill="#FFD700" letter-spacing="1">PITCH</text>
+                <text x="290" y="482" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-size="12" fill="#999" letter-spacing="2">CORNER ★</text>
+              </g>
+            </svg>
           </div>
 
           <!-- ===== FACTS GRID ===== -->
